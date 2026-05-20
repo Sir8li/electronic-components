@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>电子元件资料查询系统</title>
+    <meta name="description" content="专业的电子元件资料查询网站，提供电阻、电容、集成电路等元件的参数查询服务" />
+    <!-- 强制 HTTPS 跳转 -->
+    <script>
+      if (window.location.protocol === 'http:' && window.location.hostname === 'elecdatasheet.com') {
+        window.location.href = 'https://' + window.location.host + window.location.pathname + window.location.search;
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e1f34bc19c8d4e96817c88798ba329da"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+  </body>
+</html>

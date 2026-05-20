@@ -1,0 +1,261 @@
+.stats-page {
+  min-height: 100vh;
+  background: #0f0f1a;
+  padding: 24px;
+}
+
+.stats-header {
+  max-width: 1400px;
+  margin: 0 auto 32px;
+}
+
+.stats-header h1 {
+  color: white;
+  font-size: 2rem;
+  margin: 0 0 8px 0;
+}
+
+.stats-header p {
+  color: #888;
+  margin: 0;
+}
+
+/* 概览卡片 */
+.overview-cards {
+  max-width: 1400px;
+  margin: 0 auto 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.overview-card {
+  background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon.blue {
+  background: rgba(0, 212, 255, 0.15);
+  color: #00d4ff;
+}
+
+.card-icon.green {
+  background: rgba(0, 200, 83, 0.15);
+  color: #00c853;
+}
+
+.card-icon.cyan {
+  background: rgba(29, 233, 182, 0.15);
+  color: #1de9b6;
+}
+
+.card-icon.orange {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ff9800;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+}
+
+.card-label {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* 图表网格 */
+.charts-grid {
+  max-width: 1400px;
+  margin: 0 auto 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 24px;
+}
+
+.chart-card {
+  background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.chart-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 1.1rem;
+  margin: 0 0 20px 0;
+}
+
+.chart-card h3 svg {
+  color: #00d4ff;
+}
+
+.chart-container {
+  width: 100%;
+}
+
+/* 库存状态 */
+.stock-status-section {
+  max-width: 1400px;
+  margin: 0 auto 32px;
+  background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.stock-status-section h2 {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0 0 24px 0;
+}
+
+.stock-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stock-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stock-bar-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stock-name {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.stock-count {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.stock-bar-track {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.stock-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+/* 分类表格 */
+.category-table-section {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.category-table-section h2 {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0 0 24px 0;
+}
+
+.category-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.table-header span {
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row span {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.cat-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white !important;
+  font-weight: 500;
+}
+
+.cat-icon {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .table-header span:nth-child(n+3),
+  .table-row span:nth-child(n+3) {
+    display: none;
+  }
+}
