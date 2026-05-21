@@ -2,7 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, ExternalLink, Package, DollarSign, Box, Calendar,
   Tag, Building, FileText, ShoppingCart, Truck, Star, Phone, MapPin,
-  Hash, Upload, Download, Trash2, Clock, Search, X
+  Hash, Upload, Download, Trash2, Clock, Search, X, Eye
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { components, getCategoryLabel, getCategoryIcon } from '../data/components';
@@ -37,14 +37,23 @@ const saveToIndexedDB = async (componentId: string, file: File): Promise<void> =
   });
 };
 
-const getFromIndexedDB = async (componentId: string): Promise<{ file: File; fileName: string } | null> => {
+const getFromIndexedDB = async (componentId: string): Promise<{ file: File; fileName: string; url?: string } | null> => {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readonly');
     const store = transaction.objectStore(STORE_NAME);
     const request = store.get(componentId);
     request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result || null);
+    request.onsuccess = () => {
+      const result = request.result;
+      if (result) {
+        // 创建 Blob URL 用于显示
+        const url = URL.createObjectURL(result.file);
+        resolve({ ...result, url });
+      } else {
+        resolve(null);
+      }
+    };
   });
 };
 
@@ -115,9 +124,9 @@ const ComponentDetail = () => {
   
   const component = components.find(c => c.id === id);
   
-  const [uploadedFile, setUploadedFile] = useState<{ file: File; fileName: string } | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<{ file: File; fileName: string; url?: string } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showPdfViewer, setShowPdfViewer] = useState(false);
   const [history, setHistory] = useState<DownloadRecord[]>([]);
 
   useEffect(() => {
@@ -133,6 +142,15 @@ const ComponentDetail = () => {
     // 加载下载历史
     setHistory(getHistory());
   }, [component]);
+
+  // 清理 Blob URL
+  useEffect(() => {
+    return () => {
+      if (uploadedFile?.url) {
+        URL.revokeObjectURL(uploadedFile.url);
+      }
+    };
+  }, [uploadedFile]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!component || !e.target.files?.[0]) return;
@@ -150,7 +168,8 @@ const ComponentDetail = () => {
     setIsUploading(true);
     try {
       await saveToIndexedDB(component.id, file);
-      setUploadedFile({ file, fileName: file.name });
+      const url = URL.createObjectURL(file);
+      setUploadedFile({ file, fileName: file.name, url });
     } catch (error) {
       console.error('Upload failed:', error);
       alert('上传失败');
@@ -165,7 +184,11 @@ const ComponentDetail = () => {
     
     try {
       await deleteFromIndexedDB(component.id);
+      if (uploadedFile?.url) {
+        URL.revokeObjectURL(uploadedFile.url);
+      }
       setUploadedFile(null);
+      setShowPdfViewer(false);
     } catch (error) {
       console.error('Delete failed:', error);
       alert('删除失败');
@@ -192,6 +215,10 @@ const ComponentDetail = () => {
       console.error('Download failed:', error);
       alert('下载失败');
     }
+  };
+
+  const handlePreview = () => {
+    setShowPdfViewer(true);
   };
 
   const componentHistory = history.filter(r => r.componentId === component?.id);
@@ -310,9 +337,13 @@ const ComponentDetail = () => {
                   <span className="file-name">{uploadedFile.fileName}</span>
                 </div>
                 <div className="datasheet-actions">
+                  <button className="preview-btn" onClick={handlePreview}>
+                    <Eye size={16} />
+                    在线查看
+                  </button>
                   <button className="download-btn" onClick={handleDownload} disabled={isUploading}>
                     <Download size={16} />
-                    下载数据手册
+                    下载
                   </button>
                   <button className="delete-btn" onClick={handleDelete}>
                     <Trash2 size={16} />
@@ -354,6 +385,31 @@ const ComponentDetail = () => {
               </a>
             </div>
           </div>
+
+          {/* PDF 在线查看区域 - 直接在页面中显示 */}
+          {showPdfViewer && uploadedFile?.url && (
+            <div className="info-card pdf-viewer-card">
+              <div className="pdf-viewer-header">
+                <h2>
+                  <FileText size={20} />
+                  PDF 预览
+                </h2>
+                <button className="close-pdf-btn" onClick={() => setShowPdfViewer(false)}>
+                  <X size={20} />
+                  关闭预览
+                </button>
+              </div>
+              <div className="pdf-container">
+                <iframe
+                  src={uploadedFile.url}
+                  width="100%"
+                  height="600px"
+                  style={{ border: 'none', borderRadius: '8px' }}
+                  title="PDF Preview"
+                />
+              </div>
+            </div>
+          )}
 
           {/* 下载历史 */}
           {componentHistory.length > 0 && (
