@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, X, ChevronDown, Grid, List } from 'lucide-react';
+import { Filter, X, ChevronDown, Grid, List, Search, ExternalLink } from 'lucide-react';
 import ComponentCard from '../components/ComponentCard';
 import SearchBar from '../components/SearchBar';
 import { components, categories, manufacturers, packageTypes } from '../data/components';
@@ -103,6 +103,10 @@ const Components = () => {
     priceRange[0] > 0 || priceRange[1] < 100,
     inStockOnly
   ].filter(Boolean).length;
+
+  // 搜索结果为空的外部搜索链接
+  const showExternalSearch = filteredComponents.length === 0 && searchQuery;
+  const externalSearchUrl = `https://www.alldatasheetcn.com/view.jsp?Searchword=${encodeURIComponent(searchQuery)}`;
 
   return (
     <div className="components-page">
@@ -271,6 +275,30 @@ const Components = () => {
             <div className="empty-state">
               <p>没有找到匹配的元件</p>
               <button onClick={clearFilters}>清除筛选条件</button>
+              
+              {/* 外部搜索链接 */}
+              {showExternalSearch && (
+                <div className="external-search">
+                  <div className="external-search-tip">
+                    <p>在本地数据库中未找到 "{searchQuery}" 相关的元件</p>
+                    <p className="tip-sub">推荐您在全球最大的电子元器件数据手册搜索引擎中搜索：</p>
+                  </div>
+                  <a 
+                    href={externalSearchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="external-search-link"
+                  >
+                    <Search size={18} />
+                    <span>在 alldatasheetcn.com 搜索 "{searchQuery}"</span>
+                    <ExternalLink size={14} />
+                  </a>
+                  <p className="external-search-desc">
+                    alldatasheetcn.com 是全球最大的电子元器件数据手册搜索引擎，<br/>
+                    拥有超过 5000 万份半导体数据表，每月更新超过 60,000 份数据表。
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div className={`components-grid ${viewMode}`}>

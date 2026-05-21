@@ -2,70 +2,199 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, ExternalLink, Package, DollarSign, Box, Calendar,
   Tag, Building, FileText, ShoppingCart, Truck, Star, Phone, MapPin,
-  Hash, Book, Loader2
+  Hash, Upload, Download, Trash2, Clock, Search, X
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { components, getCategoryLabel, getCategoryIcon } from '../data/components';
-import { searchGoogleBooks, searchOpenLibrary, searchWikipedia } from '../services/bookApi';
-import type { Book as BookType } from '../services/bookApi';
 import './ComponentDetail.css';
+
+// IndexedDB 工具函数
+const DB_NAME = 'ComponentDatasheetDB';
+const STORE_NAME = 'datasheets';
+
+const openDB = (): Promise<IDBDatabase> => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+    };
+  });
+};
+
+const saveToIndexedDB = async (componentId: string, file: File): Promise<void> => {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.put({ id: componentId, file, fileName: file.name });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+  });
+};
+
+const getFromIndexedDB = async (componentId: string): Promise<{ file: File; fileName: string } | null> => {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(componentId);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result || null);
+  });
+};
+
+const deleteFromIndexedDB = async (componentId: string): Promise<void> => {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.delete(componentId);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+  });
+};
+
+// 下载历史记录
+interface DownloadRecord {
+  id: string;
+  componentId: string;
+  componentName: string;
+  partNumber: string;
+  fileName: string;
+  downloadTime: number;
+}
+
+const HISTORY_KEY = 'component-download-history';
+const MAX_RECORDS = 50;
+
+const getHistory = (): DownloadRecord[] => {
+  const stored = localStorage.getItem(HISTORY_KEY);
+  return stored ? JSON.parse(stored) : [];
+};
+
+const saveHistory = (records: DownloadRecord[]) => {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(records));
+};
+
+const addDownloadRecord = (componentId: string, componentName: string, partNumber: string, fileName: string) => {
+  const history = getHistory();
+  const newRecord: DownloadRecord = {
+    id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    componentId,
+    componentName,
+    partNumber,
+    fileName,
+    downloadTime: Date.now(),
+  };
+  const newHistory = [newRecord, ...history].slice(0, MAX_RECORDS);
+  saveHistory(newHistory);
+};
+
+const formatTime = (timestamp: number): string => {
+  const diff = Date.now() - timestamp;
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (minutes < 1) return '刚刚';
+  if (minutes < 60) return `${minutes}分钟前`;
+  if (hours < 24) return `${hours}小时前`;
+  if (days < 7) return `${days}天前`;
+  const d = new Date(timestamp);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
 
 const ComponentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const component = components.find(c => c.id === id);
-  const [books, setBooks] = useState<BookType[]>([]);
-  const [wikiInfo, setWikiInfo] = useState<{title: string; extract: string; link: string} | null>(null);
-  const [loadingBooks, setLoadingBooks] = useState(false);
+  
+  const [uploadedFile, setUploadedFile] = useState<{ file: File; fileName: string } | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<DownloadRecord[]>([]);
 
   useEffect(() => {
     if (!component) return;
     
-    const fetchBooks = async () => {
-      setLoadingBooks(true);
-      const searchQuery = component.name + ' ' + component.category;
-      
-      try {
-        const [googleResult, olResult] = await Promise.all([
-          searchGoogleBooks(searchQuery),
-          searchOpenLibrary(searchQuery)
-        ]);
-        
-        const allBooks = [...googleResult.books, ...olResult.books];
-        const seen = new Set<string>();
-        const uniqueBooks = allBooks.filter(book => {
-          if (seen.has(book.title)) return false;
-          seen.add(book.title);
-          return true;
-        });
-        
-        setBooks(uniqueBooks.slice(0, 6));
-      } catch (error) {
-        console.error('Book search error:', error);
-      } finally {
-        setLoadingBooks(false);
-      }
-    };
-
-    const fetchWiki = async () => {
-      try {
-        const result = await searchWikipedia(component.name);
-        if (result.books.length > 0) {
-          setWikiInfo({
-            title: result.books[0].title,
-            extract: result.books[0].description || '',
-            link: result.books[0].link || ''
-          });
-        }
-      } catch (error) {
-        console.error('Wiki search error:', error);
-      }
-    };
-
-    fetchBooks();
-    fetchWiki();
+    // 加载已上传的文件
+    getFromIndexedDB(component.id)
+      .then(data => {
+        if (data) setUploadedFile(data);
+      })
+      .catch(console.error);
+    
+    // 加载下载历史
+    setHistory(getHistory());
   }, [component]);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!component || !e.target.files?.[0]) return;
+    
+    const file = e.target.files[0];
+    if (file.type !== 'application/pdf') {
+      alert('请上传 PDF 文件');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('文件大小不能超过 10MB');
+      return;
+    }
+    
+    setIsUploading(true);
+    try {
+      await saveToIndexedDB(component.id, file);
+      setUploadedFile({ file, fileName: file.name });
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('上传失败');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!component) return;
+    if (!confirm('确定删除已上传的数据手册？')) return;
+    
+    try {
+      await deleteFromIndexedDB(component.id);
+      setUploadedFile(null);
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('删除失败');
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!component || !uploadedFile) return;
+    
+    try {
+      const url = URL.createObjectURL(uploadedFile.file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = uploadedFile.fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      // 添加到下载历史
+      addDownloadRecord(component.id, component.name, component.partNumber, uploadedFile.fileName);
+      setHistory(getHistory());
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('下载失败');
+    }
+  };
+
+  const componentHistory = history.filter(r => r.componentId === component?.id);
 
   if (!component) {
     return (
@@ -159,70 +288,90 @@ const ComponentDetail = () => {
             </div>
           </div>
 
-          {/* 相关图书资料 */}
-          <div className="info-card">
+          {/* 数据手册上传下载区域 */}
+          <div className="info-card datasheet-card">
             <h2>
-              <Book size={20} />
-              相关图书资料
+              <FileText size={20} />
+              数据手册
             </h2>
-            {loadingBooks ? (
-              <div className="books-loading">
-                <Loader2 className="spin" size={24} />
-                <span>正在查询相关图书资料...</span>
+            
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleUpload}
+              accept=".pdf,application/pdf"
+              style={{ display: 'none' }}
+            />
+            
+            {uploadedFile ? (
+              <div className="uploaded-file-info">
+                <div className="file-info">
+                  <FileText size={20} />
+                  <span className="file-name">{uploadedFile.fileName}</span>
+                </div>
+                <div className="datasheet-actions">
+                  <button className="download-btn" onClick={handleDownload} disabled={isUploading}>
+                    <Download size={16} />
+                    下载数据手册
+                  </button>
+                  <button className="delete-btn" onClick={handleDelete}>
+                    <Trash2 size={16} />
+                    删除
+                  </button>
+                </div>
               </div>
-            ) : books.length > 0 ? (
-              <div className="books-list">
-                {books.map((book) => (
-                  <div key={book.id} className="book-item">
-                    <div className="book-item-cover">
-                      {book.coverUrl ? (
-                        <img src={book.coverUrl} alt={book.title} />
-                      ) : (
-                        <div className="book-item-no-cover">
-                          <Book size={24} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="book-item-info">
-                      <h4 className="book-item-title">{book.title}</h4>
-                      {book.authors.length > 0 && (
-                        <p className="book-item-authors">{book.authors.join(', ')}</p>
-                      )}
-                      <div className="book-item-meta">
-                        {book.publisher && <span>{book.publisher}</span>}
-                        {book.publishDate && <span>{book.publishDate}</span>}
-                        <span className="book-item-source">{book.source}</span>
-                      </div>
-                      {book.link && (
-                        <a href={book.link} target="_blank" rel="noopener noreferrer" className="book-item-link">
-                          <ExternalLink size={14} />
-                          查看详情
-                        </a>
-                      )}
+            ) : (
+              <div className="upload-area">
+                <button className="upload-btn" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+                  <Upload size={16} />
+                  {isUploading ? '上传中...' : '上传数据手册 (PDF)'}
+                </button>
+                <p className="upload-hint">支持 PDF 格式，最大 10MB</p>
+              </div>
+            )}
+            
+            {component.datasheet && (
+              <a 
+                href={component.datasheet} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="official-datasheet-link"
+              >
+                <ExternalLink size={14} />
+                查看官方数据手册
+              </a>
+            )}
+            
+            <div className="external-search-link">
+              <a 
+                href={`https://www.alldatasheetcn.com/view.jsp?Searchword=${encodeURIComponent(component.partNumber)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="alldatasheet-link"
+              >
+                <Search size={14} />
+                在 alldatasheetcn.com 搜索更多数据手册
+              </a>
+            </div>
+          </div>
+
+          {/* 下载历史 */}
+          {componentHistory.length > 0 && (
+            <div className="info-card">
+              <h2>
+                <Clock size={20} />
+                下载历史
+              </h2>
+              <div className="download-history">
+                {componentHistory.map((record) => (
+                  <div key={record.id} className="history-item">
+                    <div className="history-info">
+                      <FileText size={14} />
+                      <span className="history-filename">{record.fileName}</span>
+                      <span className="history-time">{formatTime(record.downloadTime)}</span>
                     </div>
                   </div>
                 ))}
-              </div>
-            ) : (
-              <p className="books-empty">暂无相关图书资料</p>
-            )}
-          </div>
-
-          {/* 维基百科资料 */}
-          {wikiInfo && wikiInfo.extract && (
-            <div className="info-card">
-              <h2>
-                <FileText size={20} />
-                百科资料 (Wikipedia)
-              </h2>
-              <div className="wiki-info">
-                <p className="wiki-extract">{wikiInfo.extract}</p>
-                {wikiInfo.link && (
-                  <a href={wikiInfo.link} target="_blank" rel="noopener noreferrer" className="wiki-link">
-                    <ExternalLink size={14} />
-                    在 Wikipedia 中查看更多
-                  </a>
-                )}
               </div>
             </div>
           )}
