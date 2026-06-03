@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>璐墿杞?- 鍏ㄧ悆鐢靛瓙鍟嗗煄</title>
+    <title>购物车 - 全球电子商城</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -322,66 +322,66 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">馃洅 璐墿杞?/div>
+            <div class="logo">🛒 购物车</div>
             <div class="nav">
-                <a href="index.html">棣栭〉</a>
-                <a href="admin.html">绠＄悊鍚庡彴</a>
-                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '涓枃'}}</button>
+                <a href="index.html">首页</a>
+                <a href="admin.html">管理后台</a>
+                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '中文'}}</button>
             </div>
         </div>
     </header>
 
     <div class="container" id="cartContainer">
         <div class="empty-cart" id="emptyCart">
-            <div class="empty-cart-icon">馃洅</div>
-            <div class="empty-cart-title">{{lang === 'zh' ? '璐墿杞︿负绌? : 'Your cart is empty'}}</div>
-            <div class="empty-cart-desc">{{lang === 'zh' ? '蹇幓鎸戦€夊績浠殑鍟嗗搧鍚? : 'Start shopping now'}}</div>
-            <a href="index.html" class="empty-cart-btn">{{lang === 'zh' ? '鍘昏喘鐗? : 'Go Shopping'}}</a>
+            <div class="empty-cart-icon">🛒</div>
+            <div class="empty-cart-title">{{lang === 'zh' ? '购物车为空' : 'Your cart is empty'}}</div>
+            <div class="empty-cart-desc">{{lang === 'zh' ? '快去挑选心仪的商品吧' : 'Start shopping now'}}</div>
+            <a href="index.html" class="empty-cart-btn">{{lang === 'zh' ? '去购物' : 'Go Shopping'}}</a>
         </div>
         
         <div id="cartItems" style="display: none;">
             <div class="cart-header">
                 <div class="select-all">
                     <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                    <label for="selectAll">{{lang === 'zh' ? '鍏ㄩ€? : 'Select All'}}</label>
+                    <label for="selectAll">{{lang === 'zh' ? '全选' : 'Select All'}}</label>
                 </div>
                 <div class="action-btns">
-                    <button class="action-btn" onclick="continueShopping()">{{lang === 'zh' ? '缁х画璐墿' : 'Continue Shopping'}}</button>
-                    <button class="action-btn danger" onclick="clearCart()">{{lang === 'zh' ? '娓呯┖璐墿杞? : 'Clear Cart'}}</button>
+                    <button class="action-btn" onclick="continueShopping()">{{lang === 'zh' ? '继续购物' : 'Continue Shopping'}}</button>
+                    <button class="action-btn danger" onclick="clearCart()">{{lang === 'zh' ? '清空购物车' : 'Clear Cart'}}</button>
                 </div>
             </div>
             
             <div id="selectedInfo" style="display: none;" class="selected-info">
-                <span>{{lang === 'zh' ? '宸查€夋嫨 ' : 'Selected '}}<span id="selectedCount">0</span> {{lang === 'zh' ? '浠跺晢鍝? : 'items'}}</span>
-                <button class="delete-selected-btn" onclick="deleteSelected()">{{lang === 'zh' ? '鍒犻櫎閫変腑' : 'Delete Selected'}}</button>
+                <span>{{lang === 'zh' ? '已选择 ' : 'Selected '}}<span id="selectedCount">0</span> {{lang === 'zh' ? '件商品' : 'items'}}</span>
+                <button class="delete-selected-btn" onclick="deleteSelected()">{{lang === 'zh' ? '删除选中' : 'Delete Selected'}}</button>
             </div>
             
             <div id="itemsList"></div>
             
             <div class="total-section">
                 <div class="coupon-section">
-                    <input type="text" class="coupon-input" id="couponCode" placeholder="{{lang === 'zh' ? '杈撳叆浼樻儬鍒哥爜' : 'Enter coupon code'}}">
-                    <button class="coupon-btn" onclick="applyCoupon()">{{lang === 'zh' ? '搴旂敤浼樻儬' : 'Apply Coupon'}}</button>
+                    <input type="text" class="coupon-input" id="couponCode" placeholder="{{lang === 'zh' ? '输入优惠券码' : 'Enter coupon code'}}">
+                    <button class="coupon-btn" onclick="applyCoupon()">{{lang === 'zh' ? '应用优惠' : 'Apply Coupon'}}</button>
                 </div>
                 
                 <div class="total-row label">
-                    <span>{{lang === 'zh' ? '鍟嗗搧灏忚' : 'Subtotal'}}</span>
+                    <span>{{lang === 'zh' ? '商品小计' : 'Subtotal'}}</span>
                     <span id="subtotal">$0.00</span>
                 </div>
                 <div class="total-row label">
-                    <span>{{lang === 'zh' ? '杩愯垂' : 'Shipping'}}</span>
-                    <span id="shipping" class="shipping">{{lang === 'zh' ? '鍏嶈繍璐? : 'Free'}}</span>
+                    <span>{{lang === 'zh' ? '运费' : 'Shipping'}}</span>
+                    <span id="shipping" class="shipping">{{lang === 'zh' ? '免运费' : 'Free'}}</span>
                 </div>
                 <div class="total-row discount" id="discountRow" style="display: none;">
-                    <span>{{lang === 'zh' ? '浼樻儬鍒镐紭鎯? : 'Coupon Discount'}}</span>
+                    <span>{{lang === 'zh' ? '优惠券优惠' : 'Coupon Discount'}}</span>
                     <span id="discount">- $0.00</span>
                 </div>
                 <div class="total-row total">
-                    <span>{{lang === 'zh' ? '搴斾粯閲戦' : 'Total'}}</span>
+                    <span>{{lang === 'zh' ? '应付金额' : 'Total'}}</span>
                     <span class="price" id="totalPrice">$0.00</span>
                 </div>
                 
-                <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">{{lang === 'zh' ? '绔嬪嵆缁撶畻' : 'Checkout'}}</button>
+                <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">{{lang === 'zh' ? '立即结算' : 'Checkout'}}</button>
             </div>
         </div>
     </div>
@@ -401,32 +401,32 @@
         }
 
         function updateAllText() {
-            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '涓枃';
-            document.querySelector('.logo').textContent = lang === 'zh' ? '馃洅 璐墿杞? : '馃洅 Shopping Cart';
-            document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '棣栭〉' : 'Home';
-            document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '绠＄悊鍚庡彴' : 'Admin';
+            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '中文';
+            document.querySelector('.logo').textContent = lang === 'zh' ? '🛒 购物车' : '🛒 Shopping Cart';
+            document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '首页' : 'Home';
+            document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '管理后台' : 'Admin';
             
-            document.getElementById('selectAll').nextElementSibling.textContent = lang === 'zh' ? '鍏ㄩ€? : 'Select All';
-            document.querySelectorAll('.action-btn')[0].textContent = lang === 'zh' ? '缁х画璐墿' : 'Continue Shopping';
-            document.querySelectorAll('.action-btn')[1].textContent = lang === 'zh' ? '娓呯┖璐墿杞? : 'Clear Cart';
+            document.getElementById('selectAll').nextElementSibling.textContent = lang === 'zh' ? '全选' : 'Select All';
+            document.querySelectorAll('.action-btn')[0].textContent = lang === 'zh' ? '继续购物' : 'Continue Shopping';
+            document.querySelectorAll('.action-btn')[1].textContent = lang === 'zh' ? '清空购物车' : 'Clear Cart';
             
-            document.querySelector('.empty-cart-title').textContent = lang === 'zh' ? '璐墿杞︿负绌? : 'Your cart is empty';
-            document.querySelector('.empty-cart-desc').textContent = lang === 'zh' ? '蹇幓鎸戦€夊績浠殑鍟嗗搧鍚? : 'Start shopping now';
-            document.querySelector('.empty-cart-btn').textContent = lang === 'zh' ? '鍘昏喘鐗? : 'Go Shopping';
+            document.querySelector('.empty-cart-title').textContent = lang === 'zh' ? '购物车为空' : 'Your cart is empty';
+            document.querySelector('.empty-cart-desc').textContent = lang === 'zh' ? '快去挑选心仪的商品吧' : 'Start shopping now';
+            document.querySelector('.empty-cart-btn').textContent = lang === 'zh' ? '去购物' : 'Go Shopping';
             
-            document.getElementById('selectedInfo').querySelector('span').textContent = (lang === 'zh' ? '宸查€夋嫨 ' : 'Selected ') + document.getElementById('selectedCount').textContent + (lang === 'zh' ? '浠跺晢鍝? : ' items');
-            document.querySelector('.delete-selected-btn').textContent = lang === 'zh' ? '鍒犻櫎閫変腑' : 'Delete Selected';
+            document.getElementById('selectedInfo').querySelector('span').textContent = (lang === 'zh' ? '已选择 ' : 'Selected ') + document.getElementById('selectedCount').textContent + (lang === 'zh' ? '件商品' : ' items');
+            document.querySelector('.delete-selected-btn').textContent = lang === 'zh' ? '删除选中' : 'Delete Selected';
             
-            document.getElementById('couponCode').placeholder = lang === 'zh' ? '杈撳叆浼樻儬鍒哥爜' : 'Enter coupon code';
-            document.querySelector('.coupon-btn').textContent = lang === 'zh' ? '搴旂敤浼樻儬' : 'Apply Coupon';
+            document.getElementById('couponCode').placeholder = lang === 'zh' ? '输入优惠券码' : 'Enter coupon code';
+            document.querySelector('.coupon-btn').textContent = lang === 'zh' ? '应用优惠' : 'Apply Coupon';
             
-            document.querySelectorAll('.total-row.label')[0].querySelector('span').textContent = lang === 'zh' ? '鍟嗗搧灏忚' : 'Subtotal';
-            document.querySelectorAll('.total-row.label')[1].querySelector('span').textContent = lang === 'zh' ? '杩愯垂' : 'Shipping';
-            document.getElementById('shipping').textContent = lang === 'zh' ? '鍏嶈繍璐? : 'Free';
-            document.getElementById('discountRow').querySelector('span').textContent = lang === 'zh' ? '浼樻儬鍒镐紭鎯? : 'Coupon Discount';
-            document.querySelectorAll('.total-row.total')[0].querySelector('span').textContent = lang === 'zh' ? '搴斾粯閲戦' : 'Total';
+            document.querySelectorAll('.total-row.label')[0].querySelector('span').textContent = lang === 'zh' ? '商品小计' : 'Subtotal';
+            document.querySelectorAll('.total-row.label')[1].querySelector('span').textContent = lang === 'zh' ? '运费' : 'Shipping';
+            document.getElementById('shipping').textContent = lang === 'zh' ? '免运费' : 'Free';
+            document.getElementById('discountRow').querySelector('span').textContent = lang === 'zh' ? '优惠券优惠' : 'Coupon Discount';
+            document.querySelectorAll('.total-row.total')[0].querySelector('span').textContent = lang === 'zh' ? '应付金额' : 'Total';
             
-            document.getElementById('checkoutBtn').textContent = lang === 'zh' ? '绔嬪嵆缁撶畻' : 'Checkout';
+            document.getElementById('checkoutBtn').textContent = lang === 'zh' ? '立即结算' : 'Checkout';
         }
 
         function loadCart() {
@@ -457,7 +457,7 @@
             itemsList.innerHTML = cart.map(item => {
                 const isSelected = selectedItems.includes(item.id);
                 const stockStatus = item.stock > 100 ? 'cart-stock' : item.stock > 0 ? 'cart-stock low' : 'cart-stock out';
-                const stockText = item.stock > 100 ? (lang === 'zh' ? '搴撳瓨鍏呰冻' : 'In Stock') : item.stock > 0 ? (lang === 'zh' ? `浠呭墿 ${item.stock} 浠禶 : `Only ${item.stock} left`) : (lang === 'zh' ? '缂鸿揣' : 'Out of Stock');
+                const stockText = item.stock > 100 ? (lang === 'zh' ? '库存充足' : 'In Stock') : item.stock > 0 ? (lang === 'zh' ? `仅剩 ${item.stock} 件` : `Only ${item.stock} left`) : (lang === 'zh' ? '缺货' : 'Out of Stock');
                 const discount = item.originalPrice ? Math.round((1 - item.price / item.originalPrice) * 100) : 0;
                 
                 return `
@@ -477,16 +477,16 @@
                             <div class="cart-price-row">
                                 <span class="cart-price">$${item.price.toFixed(2)}</span>
                                 ${item.originalPrice ? `<span class="cart-original-price">$${item.originalPrice.toFixed(2)}</span>` : ''}
-                                ${discount > 0 ? `<span class="cart-discount">${lang === 'zh' ? '鐪? : '-'}${discount}%</span>` : ''}
+                                ${discount > 0 ? `<span class="cart-discount">${lang === 'zh' ? '省' : '-'}${discount}%</span>` : ''}
                             </div>
                             <div class="cart-quantity">
                                 <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
                                 <input type="number" class="qty-input" value="${item.quantity}" onchange="updateQuantityByInput(${item.id}, this)">
                                 <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                                <button class="remove-btn" onclick="removeFromCart(${item.id})">${lang === 'zh' ? '鍒犻櫎' : 'Remove'}</button>
+                                <button class="remove-btn" onclick="removeFromCart(${item.id})">${lang === 'zh' ? '删除' : 'Remove'}</button>
                             </div>
                             <div class="cart-subtotal">
-                                ${lang === 'zh' ? '灏忚' : 'Subtotal'}: <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                ${lang === 'zh' ? '小计' : 'Subtotal'}: <span>$${(item.price * item.quantity).toFixed(2)}</span>
                             </div>
                         </div>
                     </div>
@@ -531,7 +531,7 @@
         function deleteSelected() {
             if (selectedItems.length === 0) return;
             
-            if (confirm(lang === 'zh' ? `纭畾鍒犻櫎閫変腑鐨?${selectedItems.length} 浠跺晢鍝佸悧锛焋 : `Delete ${selectedItems.length} selected items?`)) {
+            if (confirm(lang === 'zh' ? `确定删除选中的 ${selectedItems.length} 件商品吗？` : `Delete ${selectedItems.length} selected items?`)) {
                 cart = cart.filter(item => !selectedItems.includes(item.id));
                 selectedItems = [];
                 localStorage.setItem('cart', JSON.stringify(cart));
@@ -551,7 +551,7 @@
                     localStorage.setItem('cart', JSON.stringify(cart));
                     renderCart();
                 } else {
-                    alert(lang === 'zh' ? '搴撳瓨涓嶈冻' : 'Insufficient stock');
+                    alert(lang === 'zh' ? '库存不足' : 'Insufficient stock');
                 }
             }
         }
@@ -568,7 +568,7 @@
                     renderCart();
                 } else {
                     input.value = item.stock;
-                    alert(lang === 'zh' ? '搴撳瓨涓嶈冻' : 'Insufficient stock');
+                    alert(lang === 'zh' ? '库存不足' : 'Insufficient stock');
                 }
             }
         }
@@ -583,7 +583,7 @@
         }
 
         function clearCart() {
-            if (confirm(lang === 'zh' ? '纭畾娓呯┖璐墿杞﹀悧锛? : 'Clear all items in cart?')) {
+            if (confirm(lang === 'zh' ? '确定清空购物车吗？' : 'Clear all items in cart?')) {
                 cart = [];
                 selectedItems = [];
                 discount = 0;
@@ -600,7 +600,7 @@
         function applyCoupon() {
             const code = document.getElementById('couponCode').value.trim();
             if (!code) {
-                alert(lang === 'zh' ? '璇疯緭鍏ヤ紭鎯犲埜鐮? : 'Please enter coupon code');
+                alert(lang === 'zh' ? '请输入优惠券码' : 'Please enter coupon code');
                 return;
             }
             
@@ -617,9 +617,9 @@
                 document.getElementById('discountRow').style.display = 'flex';
                 document.getElementById('discount').textContent = `- $${discount.toFixed(2)}`;
                 updateTotals();
-                alert(lang === 'zh' ? '浼樻儬鍒稿凡搴旂敤' : 'Coupon applied');
+                alert(lang === 'zh' ? '优惠券已应用' : 'Coupon applied');
             } else {
-                alert(lang === 'zh' ? '鏃犳晥鐨勪紭鎯犲埜鐮? : 'Invalid coupon code');
+                alert(lang === 'zh' ? '无效的优惠券码' : 'Invalid coupon code');
             }
         }
 
@@ -635,7 +635,7 @@
                 document.getElementById('shipping').textContent = '$' + shipping.toFixed(2);
                 document.getElementById('shipping').classList.remove('shipping');
             } else {
-                document.getElementById('shipping').textContent = lang === 'zh' ? '鍏嶈繍璐? : 'Free';
+                document.getElementById('shipping').textContent = lang === 'zh' ? '免运费' : 'Free';
                 document.getElementById('shipping').classList.add('shipping');
             }
             
@@ -648,7 +648,7 @@
             const total = parseFloat(document.getElementById('totalPrice').textContent.replace('$', ''));
             
             if (cart.length === 0) {
-                alert(lang === 'zh' ? '璐墿杞︿负绌? : 'Cart is empty');
+                alert(lang === 'zh' ? '购物车为空' : 'Cart is empty');
                 return;
             }
             
@@ -660,7 +660,7 @@
                 orderId: 'ORD' + Date.now()
             };
             
-            alert(`${lang === 'zh' ? '璁㈠崟鎻愪氦鎴愬姛锛? : 'Order placed successfully!'}\n${lang === 'zh' ? '璁㈠崟鍙凤細' : 'Order ID: '}${order.orderId}\n${lang === 'zh' ? '鎬昏锛? : 'Total: '}$${total.toFixed(2)}`);
+            alert(`${lang === 'zh' ? '订单提交成功！' : 'Order placed successfully!'}\n${lang === 'zh' ? '订单号：' : 'Order ID: '}${order.orderId}\n${lang === 'zh' ? '总计：' : 'Total: '}$${total.toFixed(2)}`);
             
             cart = [];
             selectedItems = [];
