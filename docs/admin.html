@@ -135,7 +135,7 @@
                     <textarea class="form-control" id="descEn" placeholder="Please enter product description"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>商品图片（选择图标）</label>
+                    <label>商品图片（选择图标或导入外部图片）</label>
                     <div style="display: flex; flex-wrap: wrap; gap: 10px;" id="imageSelector">
                         <button type="button" onclick="selectImage('🔌')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔌</button>
                         <button type="button" onclick="selectImage('💡')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">💡</button>
@@ -150,7 +150,20 @@
                         <button type="button" onclick="selectImage('🔩')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔩</button>
                         <button type="button" onclick="selectImage('🛠️')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🛠️</button>
                     </div>
-                    <input type="text" class="form-control" id="productImage" readonly placeholder="点击上方图标选择" style="margin-top: 10px;">
+                    <input type="text" class="form-control" id="productImage" readonly placeholder="点击上方图标选择或使用下方方式导入" style="margin-top: 10px;">
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        <input type="text" class="form-control" id="imageUrl" placeholder="输入图片URL地址" style="flex: 1;">
+                        <button class="btn btn-secondary" onclick="importImageUrl()">导入URL</button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label style="display: block; margin-bottom: 5px;">或上传本地图片：</label>
+                        <input type="file" accept="image/*" id="imageUpload" onchange="uploadImage()" style="display: none;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('imageUpload').click()">上传图片</button>
+                        <span style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">支持 JPG、PNG、GIF 格式</span>
+                    </div>
+                    <div id="imagePreview" style="margin-top: 10px; max-width: 200px; display: none;">
+                        <img id="previewImg" src="" style="max-width: 100%; border-radius: 4px;">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>价格 ($)</label>
@@ -219,6 +232,40 @@
 
         function selectImage(icon) {
             document.getElementById('productImage').value = icon;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageUrl').value = '';
+        }
+
+        function importImageUrl() {
+            const url = document.getElementById('imageUrl').value.trim();
+            if (!url) {
+                alert('请输入图片URL地址');
+                return;
+            }
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                alert('请输入有效的URL地址（以http://或https://开头）');
+                return;
+            }
+            document.getElementById('productImage').value = url;
+            document.getElementById('previewImg').src = url;
+            document.getElementById('imagePreview').style.display = 'block';
+        }
+
+        function uploadImage() {
+            const fileInput = document.getElementById('imageUpload');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                return;
+            }
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                document.getElementById('productImage').value = base64;
+                document.getElementById('previewImg').src = base64;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('imageUrl').value = '';
+            };
+            reader.readAsDataURL(file);
         }
 
         function addProduct() {
