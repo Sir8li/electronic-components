@@ -127,12 +127,55 @@
                     <input type="text" class="form-control" id="nameEn">
                 </div>
                 <div class="form-group">
+                    <label>商品描述（中文）</label>
+                    <textarea class="form-control" id="descZh" placeholder="请输入商品描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>商品描述（英文）</label>
+                    <textarea class="form-control" id="descEn" placeholder="Please enter product description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>商品图片（选择图标）</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;" id="imageSelector">
+                        <button type="button" onclick="selectImage('🔌')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔌</button>
+                        <button type="button" onclick="selectImage('💡')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">💡</button>
+                        <button type="button" onclick="selectImage('🔧')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔧</button>
+                        <button type="button" onclick="selectImage('💻')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">💻</button>
+                        <button type="button" onclick="selectImage('🔋')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔋</button>
+                        <button type="button" onclick="selectImage('📡')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">📡</button>
+                        <button type="button" onclick="selectImage('⚡')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">⚡</button>
+                        <button type="button" onclick="selectImage('🔬')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔬</button>
+                        <button type="button" onclick="selectImage('🔊')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔊</button>
+                        <button type="button" onclick="selectImage('🎮')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🎮</button>
+                        <button type="button" onclick="selectImage('🔩')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🔩</button>
+                        <button type="button" onclick="selectImage('🛠️')" style="width: 40px; height: 40px; font-size: 24px; background: var(--card); border: 2px solid var(--border); border-radius: 6px; cursor: pointer;">🛠️</button>
+                    </div>
+                    <input type="text" class="form-control" id="productImage" readonly placeholder="点击上方图标选择" style="margin-top: 10px;">
+                </div>
+                <div class="form-group">
                     <label>价格 ($)</label>
                     <input type="number" step="0.01" class="form-control" id="price">
                 </div>
                 <div class="form-group">
+                    <label>原价 ($)</label>
+                    <input type="number" step="0.01" class="form-control" id="originalPrice">
+                </div>
+                <div class="form-group">
                     <label>库存</label>
                     <input type="number" class="form-control" id="stock">
+                </div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <select class="form-control" id="category">
+                        <option value="connectors">连接器</option>
+                        <option value="led">LED灯珠</option>
+                        <option value="resistors">电阻</option>
+                        <option value="ics">集成电路</option>
+                        <option value="power">电源</option>
+                        <option value="sensors">传感器</option>
+                        <option value="relays">继电器</option>
+                        <option value="devboards">开发板</option>
+                    </select>
                 </div>
                 <button class="btn btn-primary" onclick="addProduct()">添加商品</button>
             </div>
@@ -174,25 +217,34 @@
             });
         });
 
+        function selectImage(icon) {
+            document.getElementById('productImage').value = icon;
+        }
+
         function addProduct() {
             const nameZh = document.getElementById('nameZh').value;
             const nameEn = document.getElementById('nameEn').value;
+            const descZh = document.getElementById('descZh').value || '高品质电子元件';
+            const descEn = document.getElementById('descEn').value || 'High quality component';
+            const image = document.getElementById('productImage').value || '🔌';
             const price = parseFloat(document.getElementById('price').value);
+            const originalPrice = parseFloat(document.getElementById('originalPrice').value) || Math.round(price * 1.4 * 100) / 100;
             const stock = parseInt(document.getElementById('stock').value);
+            const category = document.getElementById('category').value;
             
             if (!nameZh || !nameEn || isNaN(price) || isNaN(stock)) {
-                alert('请填写完整的商品信息');
+                alert('请填写完整的商品信息（名称、价格、库存）');
                 return;
             }
             
             const product = {
                 id: Date.now(),
                 name: { zh: nameZh, en: nameEn },
-                description: { zh: '高品质电子元件', en: 'High quality component' },
-                category: 'connectors',
+                description: { zh: descZh, en: descEn },
+                category: category,
                 price: price,
-                originalPrice: Math.round(price * 1.4 * 100) / 100,
-                image: '🔌',
+                originalPrice: originalPrice,
+                image: image,
                 specs: { model: 'Custom' },
                 tags: ['电子元件'],
                 tagsEn: ['Electronic'],
@@ -207,8 +259,13 @@
             
             document.getElementById('nameZh').value = '';
             document.getElementById('nameEn').value = '';
+            document.getElementById('descZh').value = '';
+            document.getElementById('descEn').value = '';
+            document.getElementById('productImage').value = '';
             document.getElementById('price').value = '';
+            document.getElementById('originalPrice').value = '';
             document.getElementById('stock').value = '';
+            document.getElementById('category').value = 'connectors';
             
             renderProductList();
         }
