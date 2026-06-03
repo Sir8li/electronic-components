@@ -193,7 +193,7 @@
                 <a href="index.html" class="active">首页</a>
                 <a href="admin.html">管理后台</a>
                 <a href="cart.html">购物车<span class="cart-count" id="cartCount">0</span></a>
-                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '中文'}}</button>
+                <button class="lang-switch" id="langBtn" onclick="toggleLang()">English</button>
             </div>
         </div>
     </header>
@@ -221,7 +221,7 @@
         }
 
         function updateAllText() {
-            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '中文';
+            document.getElementById('langBtn').textContent = lang === 'zh' ? 'English' : '中文';
             document.querySelector('.logo').textContent = lang === 'zh' ? '⚡ 全球电子商城' : '⚡ Global Electronics';
             document.querySelector('.hero h1').textContent = lang === 'zh' ? '全球电子商城' : 'Global Electronics Store';
             document.querySelector('.hero p').textContent = lang === 'zh' ? '高品质电子元件，全球配送' : 'High quality electronic components, worldwide shipping';
@@ -229,7 +229,7 @@
             
             document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '首页' : 'Home';
             document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '管理后台' : 'Admin';
-            document.querySelectorAll('.nav a')[2].textContent = (lang === 'zh' ? '购物车' : 'Cart') + document.querySelector('.cart-count').outerHTML;
+            document.querySelectorAll('.nav a')[2].innerHTML = (lang === 'zh' ? '购物车' : 'Cart') + '<span class="cart-count" id="cartCount">' + document.getElementById('cartCount').textContent + '</span>';
             
             renderCategories();
             renderProducts();
