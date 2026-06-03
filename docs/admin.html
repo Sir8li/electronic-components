@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绠＄悊鍚庡彴 - 鍏ㄧ悆鐢靛瓙鍟嗗煄</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #00ff88;
+            --bg: #0a0e1a;
+            --card: #12182a;
+            --border: #1e2a4a;
+            --text: #fff;
+            --text-secondary: #8892a8;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(18, 24, 42, 0.9);
+            padding: 15px 20px;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary); }
+        .nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .nav a:hover { color: var(--primary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .admin-tabs { margin-bottom: 20px; }
+        .admin-tab {
+            padding: 10px 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .admin-tab.active { background: var(--primary); color: #000; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section-title { color: var(--primary); margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-secondary { background: var(--border); color: var(--text); }
+        .products-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .product-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .product-image { font-size: 32px; text-align: center; }
+        .product-name { font-weight: 600; margin: 10px 0; }
+        .product-price { color: var(--secondary); }
+        textarea.form-control { min-height: 120px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">鈿?绠＄悊鍚庡彴</div>
+            <div class="nav">
+                <a href="index.html">棣栭〉</a>
+                <a href="cart.html">璐墿杞?/a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="add">娣诲姞鍟嗗搧</button>
+            <button class="admin-tab" data-tab="list">鍟嗗搧鍒楄〃</button>
+            <button class="admin-tab" data-tab="batch">鎵归噺涓婁紶</button>
+        </div>
+
+        <div class="tab-content active" id="add-tab">
+            <div class="form-section">
+                <h3 class="section-title">娣诲姞鍟嗗搧</h3>
+                <div class="form-group">
+                    <label>鍟嗗搧鍚嶇О锛堜腑鏂囷級</label>
+                    <input type="text" class="form-control" id="nameZh">
+                </div>
+                <div class="form-group">
+                    <label>鍟嗗搧鍚嶇О锛堣嫳鏂囷級</label>
+                    <input type="text" class="form-control" id="nameEn">
+                </div>
+                <div class="form-group">
+                    <label>浠锋牸 ($)</label>
+                    <input type="number" step="0.01" class="form-control" id="price">
+                </div>
+                <div class="form-group">
+                    <label>搴撳瓨</label>
+                    <input type="number" class="form-control" id="stock">
+                </div>
+                <button class="btn btn-primary" onclick="addProduct()">娣诲姞鍟嗗搧</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="list-tab">
+            <div class="products-list" id="productsList"></div>
+        </div>
+
+        <div class="tab-content" id="batch-tab">
+            <div class="form-section">
+                <h3 class="section-title">鎵归噺涓婁紶鍟嗗搧</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">鏀寔娣樺疂銆佸ぉ鐚€佷含涓溿€?688绛夊钩鍙帮紝姣忚涓€涓摼鎺?/p>
+                <textarea class="form-control" id="batchLinks" placeholder="https://item.taobao.com/item.htm?id=123456789&#10;https://item.jd.com/product/123456789.html"></textarea>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="parseBatchLinks()">瑙ｆ瀽鍟嗗搧</button>
+                    <button class="btn btn-secondary" onclick="clearBatchLinks()">娓呯┖</button>
+                </div>
+            </div>
+            <div class="form-section" id="batchPreview" style="display: none;">
+                <h3 class="section-title">鍟嗗搧棰勮锛堝彲缂栬緫锛?/h3>
+                <p style="color: var(--text-secondary); margin-bottom: 10px;">鐐瑰嚮鍟嗗搧淇℃伅鍙慨鏀癸紝鍒犻櫎涓嶉渶瑕佺殑鍟嗗搧</p>
+                <div id="batchGrid"></div>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="saveBatchProducts()">淇濆瓨鍒板晢鍩?/button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+    <script>
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + '-tab').classList.add('active');
+            });
+        });
+
+        function addProduct() {
+            const product = {
+                id: Date.now(),
+                name: { zh: document.getElementById('nameZh').value, en: document.getElementById('nameEn').value },
+                description: { zh: '楂樺搧璐ㄧ數瀛愬厓浠?, en: 'High quality component' },
+                category: 'connectors',
+                price: parseFloat(document.getElementById('price').value),
+                originalPrice: parseFloat(document.getElementById('price').value) * 1.4,
+                image: '馃攲',
+                specs: { model: 'Custom' },
+                tags: ['鐢靛瓙鍏冧欢'],
+                tagsEn: ['Electronic'],
+                stock: parseInt(document.getElementById('stock').value),
+                sales: 0,
+                rating: 4.8
+            };
+            products.push(product);
+            saveProducts();
+            alert('鍟嗗搧娣诲姞鎴愬姛');
+            renderProductList();
+        }
+
+        function renderProductList() {
+            const list = document.getElementById('productsList');
+            list.innerHTML = products.map(p => `
+                <div class="product-item">
+                    <div class="product-image">${p.image}</div>
+                    <div class="product-name">${p.name.zh}</div>
+                    <div class="product-price">$${p.price.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        let batchProducts = [];
+
+        function parseBatchLinks() {
+            const linksText = document.getElementById('batchLinks').value.trim();
+            if (!linksText) { alert('璇疯緭鍏ュ晢鍝侀摼鎺?); return; }
+            
+            const links = linksText.split('\n').filter(l => l.trim());
+            if (links.length === 0) { alert('璇疯緭鍏ユ湁鏁堢殑鍟嗗搧閾炬帴'); return; }
+            
+            batchProducts = [];
+            
+            links.forEach((link, index) => {
+                link = link.trim();
+                if (!link) return;
+                
+                try { link = decodeURIComponent(link); } catch (e) {}
+                
+                let id = null;
+                const taobaoMatch = link.match(/[?&]id=(\d+)/);
+                if (taobaoMatch) id = parseInt(taobaoMatch[1]);
+                
+                const jdMatch = link.match(/jd\.com\/(?:product\/)?(\d+)(?:\.html)?/);
+                if (jdMatch && !id) id = parseInt(jdMatch[1]);
+                
+                const alibabaMatch = link.match(/1688\.com\/offer\/(\d+)/);
+                if (alibabaMatch && !id) id = parseInt(alibabaMatch[1]);
+                
+                const alicdnMatch = link.match(/alicdn\.com\/.*?(\d{8,16})/);
+                if (alicdnMatch && !id) id = parseInt(alicdnMatch[1]);
+                
+                const numMatch = link.match(/(\d{8,16})/);
+                if (numMatch && !id) id = parseInt(numMatch[1]);
+                
+                if (id) {
+                    if (products.find(p => p.id === id)) return;
+                    
+                    const names = ['USB鏁版嵁绾?, 'LED鐏彔', '璐寸墖鐢甸樆', '寮€鍙戞澘', '閿傜數姹?, '浼犳劅鍣?, '缁х數鍣?, 'WiFi妯″潡'];
+                    const icons = ['馃攲', '馃挕', '馃敡', '馃捇', '馃攱', '馃摗', '鈿?, '馃敩'];
+                    const cats = ['connectors', 'led', 'resistors', 'ics', 'power', 'sensors', 'relays', 'devboards'];
+                    const idx = index % 8;
+                    const price = Math.round((Math.random() * 20 + 2) * 100) / 100;
+                    
+                    batchProducts.push({
+                        id: id,
+                        name: { zh: names[idx] + ' #' + id, en: names[idx] + ' #' + id },
+                        description: { zh: '楂樺搧璐ㄧ數瀛愬厓浠?, en: 'High quality component' },
+                        category: cats[idx],
+                        price: price,
+                        originalPrice: Math.round(price * 1.4 * 100) / 100,
+                        image: icons[idx],
+                        specs: { model: 'Model-' + id },
+                        tags: ['鐢靛瓙鍏冧欢'],
+                        tagsEn: ['Electronic'],
+                        stock: 500,
+                        sales: 0,
+                        rating: 4.8
+                    });
+                }
+            });
+            
+            if (batchProducts.length === 0) {
+                alert('鏈兘瑙ｆ瀽鍒版湁鏁堝晢鍝侀摼鎺?);
+                return;
+            }
+            
+            renderBatchPreview();
+            document.getElementById('batchPreview').style.display = 'block';
+        }
+
+        function renderBatchPreview() {
+            const grid = document.getElementById('batchGrid');
+            grid.innerHTML = batchProducts.map((product, idx) => `
+                <div class="product-item" style="margin-bottom: 15px;">
+                    <button onclick="removeBatchProduct(${idx})" style="background: #ff4757; color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-bottom: 10px;">鍒犻櫎</button>
+                    <div class="product-image">${product.image}</div>
+                    <div style="margin: 10px 0;">
+                        <label style="display: block; color: #8892a8; font-size: 12px;">鍚嶇О锛堜腑鏂囷級</label>
+                        <input type="text" value="${product.name.zh}" onchange="updateBatchProduct(${idx}, 'name', 'zh', this.value)" class="form-control" style="margin-bottom: 5px;">
+                        <label style="display: block; color: #8892a8; font-size: 12px;">鍚嶇О锛堣嫳鏂囷級</label>
+                        <input type="text" value="${product.name.en}" onchange="updateBatchProduct(${idx}, 'name', 'en', this.value)" class="form-control" style="margin-bottom: 5px;">
+                        <label style="display: block; color: #8892a8; font-size: 12px;">浠锋牸 ($)</label>
+                        <input type="number" step="0.01" value="${product.price}" onchange="updateBatchProduct(${idx}, 'price', '', parseFloat(this.value))" class="form-control">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateBatchProduct(index, field, subField, value) {
+            if (subField) batchProducts[index][field][subField] = value;
+            else batchProducts[index][field] = value;
+        }
+
+        function removeBatchProduct(index) {
+            batchProducts.splice(index, 1);
+            if (batchProducts.length === 0) {
+                document.getElementById('batchPreview').style.display = 'none';
+            } else {
+                renderBatchPreview();
+            }
+        }
+
+        function saveBatchProducts() {
+            if (batchProducts.length === 0) { alert('娌℃湁鍙繚瀛樼殑鍟嗗搧'); return; }
+            
+            let saved = 0;
+            batchProducts.forEach(product => {
+                if (!products.find(p => p.id === product.id)) {
+                    products.push(product);
+                    saved++;
+                }
+            });
+            
+            saveProducts();
+            document.getElementById('batchPreview').style.display = 'none';
+            document.getElementById('batchLinks').value = '';
+            batchProducts = [];
+            
+            alert('鎴愬姛淇濆瓨 ' + saved + ' 涓晢鍝?);
+            renderProductList();
+        }
+
+        function clearBatchLinks() {
+            document.getElementById('batchLinks').value = '';
+            document.getElementById('batchPreview').style.display = 'none';
+            batchProducts = [];
+        }
+
+        loadSavedData();
+        renderProductList();
+    </script>
+</body>
+</html>
