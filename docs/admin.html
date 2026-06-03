@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -175,30 +175,47 @@
         });
 
         function addProduct() {
+            const nameZh = document.getElementById('nameZh').value;
+            const nameEn = document.getElementById('nameEn').value;
+            const price = parseFloat(document.getElementById('price').value);
+            const stock = parseInt(document.getElementById('stock').value);
+            
+            if (!nameZh || !nameEn || isNaN(price) || isNaN(stock)) {
+                alert('请填写完整的商品信息');
+                return;
+            }
+            
             const product = {
                 id: Date.now(),
-                name: { zh: document.getElementById('nameZh').value, en: document.getElementById('nameEn').value },
+                name: { zh: nameZh, en: nameEn },
                 description: { zh: '高品质电子元件', en: 'High quality component' },
                 category: 'connectors',
-                price: parseFloat(document.getElementById('price').value),
-                originalPrice: parseFloat(document.getElementById('price').value) * 1.4,
+                price: price,
+                originalPrice: Math.round(price * 1.4 * 100) / 100,
                 image: '🔌',
                 specs: { model: 'Custom' },
                 tags: ['电子元件'],
                 tagsEn: ['Electronic'],
-                stock: parseInt(document.getElementById('stock').value),
+                stock: stock,
                 sales: 0,
                 rating: 4.8
             };
-            products.push(product);
-            saveProducts();
+            
+            window.products.push(product);
+            localStorage.setItem('products', JSON.stringify(window.products));
             alert('商品添加成功');
+            
+            document.getElementById('nameZh').value = '';
+            document.getElementById('nameEn').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('stock').value = '';
+            
             renderProductList();
         }
 
         function renderProductList() {
             const list = document.getElementById('productsList');
-            list.innerHTML = products.map(p => `
+            list.innerHTML = window.products.map(p => `
                 <div class="product-item">
                     <div class="product-image">${p.image}</div>
                     <div class="product-name">${p.name.zh}</div>
@@ -241,7 +258,7 @@
                 if (numMatch && !id) id = parseInt(numMatch[1]);
                 
                 if (id) {
-                    if (products.find(p => p.id === id)) return;
+                    if (window.products.find(p => p.id === id)) return;
                     
                     const names = ['USB数据线', 'LED灯珠', '贴片电阻', '开发板', '锂电池', '传感器', '继电器', 'WiFi模块'];
                     const icons = ['🔌', '💡', '🔧', '💻', '🔋', '📡', '⚡', '🔬'];
@@ -313,13 +330,13 @@
             
             let saved = 0;
             batchProducts.forEach(product => {
-                if (!products.find(p => p.id === product.id)) {
-                    products.push(product);
+                if (!window.products.find(p => p.id === product.id)) {
+                    window.products.push(product);
                     saved++;
                 }
             });
             
-            saveProducts();
+            localStorage.setItem('products', JSON.stringify(window.products));
             document.getElementById('batchPreview').style.display = 'none';
             document.getElementById('batchLinks').value = '';
             batchProducts = [];
@@ -334,7 +351,6 @@
             batchProducts = [];
         }
 
-        loadSavedData();
         renderProductList();
     </script>
 </body>
