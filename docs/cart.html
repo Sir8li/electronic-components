@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>璐墿杞?- 鍏ㄧ悆鐢靛瓙鍟嗗煄</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #00ff88;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --danger: #ff4757;
+            --bg: #0a0e1a;
+            --card: #12182a;
+            --border: #1e2a4a;
+            --text: #fff;
+            --text-secondary: #8892a8;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(18, 24, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary); }
+        .nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+        .nav a:hover { color: var(--primary); }
+        .lang-switch {
+            margin-left: 20px;
+            padding: 5px 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            cursor: pointer;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .select-all {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .select-all input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .action-btns { display: flex; gap: 10px; }
+        .action-btn {
+            padding: 8px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .action-btn:hover { background: var(--border); }
+        .action-btn.danger { border-color: var(--danger); color: var(--danger); }
+        .action-btn.danger:hover { background: var(--danger); color: white; }
+        .cart-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+        .cart-item:hover { border-color: var(--primary); }
+        .cart-item.selected { border-color: var(--secondary); background: rgba(0, 255, 136, 0.05); }
+        .select-item { margin-top: 15px; }
+        .select-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .cart-image {
+            width: 100px;
+            height: 100px;
+            background: var(--bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        .cart-info { flex: 1; }
+        .cart-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cart-badge {
+            padding: 2px 8px;
+            background: var(--warning);
+            color: #000;
+            font-size: 12px;
+            border-radius: 10px;
+        }
+        .cart-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 10px; }
+        .cart-price-row { display: flex; align-items: center; gap: 15px; }
+        .cart-price { color: var(--secondary); font-size: 20px; font-weight: bold; }
+        .cart-original-price {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            font-size: 14px;
+        }
+        .cart-discount { color: var(--danger); font-size: 14px; }
+        .cart-specs {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .cart-stock {
+            color: var(--success);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .cart-stock.low { color: var(--warning); }
+        .cart-stock.out { color: var(--danger); }
+        .cart-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            background: var(--border);
+            border: none;
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .qty-btn:hover { background: var(--primary); color: #000; }
+        .qty-input {
+            width: 60px;
+            height: 35px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            text-align: center;
+            font-size: 16px;
+        }
+        .qty-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .remove-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+        .remove-btn:hover { background: #ff6b7a; }
+        .cart-subtotal {
+            text-align: right;
+            margin-top: 10px;
+        }
+        .cart-subtotal span {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .total-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .total-row.label { color: var(--text-secondary); }
+        .total-row.discount { color: var(--danger); }
+        .total-row.shipping { color: var(--success); }
+        .total-row.total {
+            font-size: 20px;
+            font-weight: bold;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            margin-top: 10px;
+        }
+        .total-row.total .price { color: var(--secondary); font-size: 28px; }
+        .coupon-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .coupon-input {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+        }
+        .coupon-btn {
+            padding: 12px 20px;
+            background: var(--warning);
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .checkout-btn:hover { transform: scale(1.02); }
+        .checkout-btn:disabled {
+            background: var(--border);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-cart-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .empty-cart-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        .empty-cart-desc { margin-bottom: 30px; }
+        .empty-cart-btn {
+            padding: 12px 30px;
+            background: var(--primary);
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .empty-cart-btn:hover { background: #00e5ff; }
+        .selected-info {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .selected-info span { color: var(--secondary); font-weight: bold; }
+        .delete-selected-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">馃洅 璐墿杞?/div>
+            <div class="nav">
+                <a href="index.html">棣栭〉</a>
+                <a href="admin.html">绠＄悊鍚庡彴</a>
+                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '涓枃'}}</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" id="cartContainer">
+        <div class="empty-cart" id="emptyCart">
+            <div class="empty-cart-icon">馃洅</div>
+            <div class="empty-cart-title">{{lang === 'zh' ? '璐墿杞︿负绌? : 'Your cart is empty'}}</div>
+            <div class="empty-cart-desc">{{lang === 'zh' ? '蹇幓鎸戦€夊績浠殑鍟嗗搧鍚? : 'Start shopping now'}}</div>
+            <a href="index.html" class="empty-cart-btn">{{lang === 'zh' ? '鍘昏喘鐗? : 'Go Shopping'}}</a>
+        </div>
+        
+        <div id="cartItems" style="display: none;">
+            <div class="cart-header">
+                <div class="select-all">
+                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                    <label for="selectAll">{{lang === 'zh' ? '鍏ㄩ€? : 'Select All'}}</label>
+                </div>
+                <div class="action-btns">
+                    <button class="action-btn" onclick="continueShopping()">{{lang === 'zh' ? '缁х画璐墿' : 'Continue Shopping'}}</button>
+                    <button class="action-btn danger" onclick="clearCart()">{{lang === 'zh' ? '娓呯┖璐墿杞? : 'Clear Cart'}}</button>
+                </div>
+            </div>
+            
+            <div id="selectedInfo" style="display: none;" class="selected-info">
+                <span>{{lang === 'zh' ? '宸查€夋嫨 ' : 'Selected '}}<span id="selectedCount">0</span> {{lang === 'zh' ? '浠跺晢鍝? : 'items'}}</span>
+                <button class="delete-selected-btn" onclick="deleteSelected()">{{lang === 'zh' ? '鍒犻櫎閫変腑' : 'Delete Selected'}}</button>
+            </div>
+            
+            <div id="itemsList"></div>
+            
+            <div class="total-section">
+                <div class="coupon-section">
+                    <input type="text" class="coupon-input" id="couponCode" placeholder="{{lang === 'zh' ? '杈撳叆浼樻儬鍒哥爜' : 'Enter coupon code'}}">
+                    <button class="coupon-btn" onclick="applyCoupon()">{{lang === 'zh' ? '搴旂敤浼樻儬' : 'Apply Coupon'}}</button>
+                </div>
+                
+                <div class="total-row label">
+                    <span>{{lang === 'zh' ? '鍟嗗搧灏忚' : 'Subtotal'}}</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="total-row label">
+                    <span>{{lang === 'zh' ? '杩愯垂' : 'Shipping'}}</span>
+                    <span id="shipping" class="shipping">{{lang === 'zh' ? '鍏嶈繍璐? : 'Free'}}</span>
+                </div>
+                <div class="total-row discount" id="discountRow" style="display: none;">
+                    <span>{{lang === 'zh' ? '浼樻儬鍒镐紭鎯? : 'Coupon Discount'}}</span>
+                    <span id="discount">- $0.00</span>
+                </div>
+                <div class="total-row total">
+                    <span>{{lang === 'zh' ? '搴斾粯閲戦' : 'Total'}}</span>
+                    <span class="price" id="totalPrice">$0.00</span>
+                </div>
+                
+                <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">{{lang === 'zh' ? '绔嬪嵆缁撶畻' : 'Checkout'}}</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+    <script>
+        let cart = [];
+        let lang = 'zh';
+        let selectedItems = [];
+        let discount = 0;
+
+        function toggleLang() {
+            lang = lang === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('language', lang);
+            updateAllText();
+            renderCart();
+        }
+
+        function updateAllText() {
+            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '涓枃';
+            document.querySelector('.logo').textContent = lang === 'zh' ? '馃洅 璐墿杞? : '馃洅 Shopping Cart';
+            document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '棣栭〉' : 'Home';
+            document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '绠＄悊鍚庡彴' : 'Admin';
+            
+            document.getElementById('selectAll').nextElementSibling.textContent = lang === 'zh' ? '鍏ㄩ€? : 'Select All';
+            document.querySelectorAll('.action-btn')[0].textContent = lang === 'zh' ? '缁х画璐墿' : 'Continue Shopping';
+            document.querySelectorAll('.action-btn')[1].textContent = lang === 'zh' ? '娓呯┖璐墿杞? : 'Clear Cart';
+            
+            document.querySelector('.empty-cart-title').textContent = lang === 'zh' ? '璐墿杞︿负绌? : 'Your cart is empty';
+            document.querySelector('.empty-cart-desc').textContent = lang === 'zh' ? '蹇幓鎸戦€夊績浠殑鍟嗗搧鍚? : 'Start shopping now';
+            document.querySelector('.empty-cart-btn').textContent = lang === 'zh' ? '鍘昏喘鐗? : 'Go Shopping';
+            
+            document.getElementById('selectedInfo').querySelector('span').textContent = (lang === 'zh' ? '宸查€夋嫨 ' : 'Selected ') + document.getElementById('selectedCount').textContent + (lang === 'zh' ? '浠跺晢鍝? : ' items');
+            document.querySelector('.delete-selected-btn').textContent = lang === 'zh' ? '鍒犻櫎閫変腑' : 'Delete Selected';
+            
+            document.getElementById('couponCode').placeholder = lang === 'zh' ? '杈撳叆浼樻儬鍒哥爜' : 'Enter coupon code';
+            document.querySelector('.coupon-btn').textContent = lang === 'zh' ? '搴旂敤浼樻儬' : 'Apply Coupon';
+            
+            document.querySelectorAll('.total-row.label')[0].querySelector('span').textContent = lang === 'zh' ? '鍟嗗搧灏忚' : 'Subtotal';
+            document.querySelectorAll('.total-row.label')[1].querySelector('span').textContent = lang === 'zh' ? '杩愯垂' : 'Shipping';
+            document.getElementById('shipping').textContent = lang === 'zh' ? '鍏嶈繍璐? : 'Free';
+            document.getElementById('discountRow').querySelector('span').textContent = lang === 'zh' ? '浼樻儬鍒镐紭鎯? : 'Coupon Discount';
+            document.querySelectorAll('.total-row.total')[0].querySelector('span').textContent = lang === 'zh' ? '搴斾粯閲戦' : 'Total';
+            
+            document.getElementById('checkoutBtn').textContent = lang === 'zh' ? '绔嬪嵆缁撶畻' : 'Checkout';
+        }
+
+        function loadCart() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) cart = JSON.parse(savedCart);
+            
+            const savedLang = localStorage.getItem('language');
+            if (savedLang) lang = savedLang;
+            
+            updateAllText();
+            renderCart();
+        }
+
+        function renderCart() {
+            const itemsList = document.getElementById('itemsList');
+            const emptyCart = document.getElementById('emptyCart');
+            const cartItems = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                emptyCart.style.display = 'block';
+                cartItems.style.display = 'none';
+                return;
+            }
+            
+            emptyCart.style.display = 'none';
+            cartItems.style.display = 'block';
+            
+            itemsList.innerHTML = cart.map(item => {
+                const isSelected = selectedItems.includes(item.id);
+                const stockStatus = item.stock > 100 ? 'cart-stock' : item.stock > 0 ? 'cart-stock low' : 'cart-stock out';
+                const stockText = item.stock > 100 ? (lang === 'zh' ? '搴撳瓨鍏呰冻' : 'In Stock') : item.stock > 0 ? (lang === 'zh' ? `浠呭墿 ${item.stock} 浠禶 : `Only ${item.stock} left`) : (lang === 'zh' ? '缂鸿揣' : 'Out of Stock');
+                const discount = item.originalPrice ? Math.round((1 - item.price / item.originalPrice) * 100) : 0;
+                
+                return `
+                    <div class="cart-item ${isSelected ? 'selected' : ''}">
+                        <div class="select-item">
+                            <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectItem(${item.id})">
+                        </div>
+                        <div class="cart-image">${item.image}</div>
+                        <div class="cart-info">
+                            <div class="cart-name">
+                                ${item.name[lang]}
+                                ${item.badge ? `<span class="cart-badge">${item.badge}</span>` : ''}
+                            </div>
+                            <div class="cart-desc">${item.description[lang]}</div>
+                            <div class="cart-specs">${item.specs ? Object.values(item.specs).slice(0, 2).join(', ') : ''}</div>
+                            <div class="${stockStatus}">${stockText}</div>
+                            <div class="cart-price-row">
+                                <span class="cart-price">$${item.price.toFixed(2)}</span>
+                                ${item.originalPrice ? `<span class="cart-original-price">$${item.originalPrice.toFixed(2)}</span>` : ''}
+                                ${discount > 0 ? `<span class="cart-discount">${lang === 'zh' ? '鐪? : '-'}${discount}%</span>` : ''}
+                            </div>
+                            <div class="cart-quantity">
+                                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                <input type="number" class="qty-input" value="${item.quantity}" onchange="updateQuantityByInput(${item.id}, this)">
+                                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                                <button class="remove-btn" onclick="removeFromCart(${item.id})">${lang === 'zh' ? '鍒犻櫎' : 'Remove'}</button>
+                            </div>
+                            <div class="cart-subtotal">
+                                ${lang === 'zh' ? '灏忚' : 'Subtotal'}: <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            updateTotals();
+            updateSelectedInfo();
+        }
+
+        function toggleSelectAll() {
+            const isChecked = document.getElementById('selectAll').checked;
+            if (isChecked) {
+                selectedItems = cart.map(item => item.id);
+            } else {
+                selectedItems = [];
+            }
+            renderCart();
+        }
+
+        function toggleSelectItem(productId) {
+            const index = selectedItems.indexOf(productId);
+            if (index === -1) {
+                selectedItems.push(productId);
+            } else {
+                selectedItems.splice(index, 1);
+            }
+            document.getElementById('selectAll').checked = selectedItems.length === cart.length;
+            updateSelectedInfo();
+        }
+
+        function updateSelectedInfo() {
+            const selectedInfo = document.getElementById('selectedInfo');
+            if (selectedItems.length > 0) {
+                selectedInfo.style.display = 'flex';
+                document.getElementById('selectedCount').textContent = selectedItems.length;
+            } else {
+                selectedInfo.style.display = 'none';
+            }
+        }
+
+        function deleteSelected() {
+            if (selectedItems.length === 0) return;
+            
+            if (confirm(lang === 'zh' ? `纭畾鍒犻櫎閫変腑鐨?${selectedItems.length} 浠跺晢鍝佸悧锛焋 : `Delete ${selectedItems.length} selected items?`)) {
+                cart = cart.filter(item => !selectedItems.includes(item.id));
+                selectedItems = [];
+                localStorage.setItem('cart', JSON.stringify(cart));
+                document.getElementById('selectAll').checked = false;
+                renderCart();
+            }
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(c => c.id === productId);
+            if (item) {
+                const newQty = item.quantity + delta;
+                if (newQty <= 0) {
+                    removeFromCart(productId);
+                } else if (newQty <= item.stock) {
+                    item.quantity = newQty;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    renderCart();
+                } else {
+                    alert(lang === 'zh' ? '搴撳瓨涓嶈冻' : 'Insufficient stock');
+                }
+            }
+        }
+
+        function updateQuantityByInput(productId, input) {
+            const item = cart.find(c => c.id === productId);
+            if (item) {
+                const newQty = parseInt(input.value) || 1;
+                if (newQty <= 0) {
+                    removeFromCart(productId);
+                } else if (newQty <= item.stock) {
+                    item.quantity = newQty;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    renderCart();
+                } else {
+                    input.value = item.stock;
+                    alert(lang === 'zh' ? '搴撳瓨涓嶈冻' : 'Insufficient stock');
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(c => c.id !== productId);
+            const index = selectedItems.indexOf(productId);
+            if (index !== -1) selectedItems.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            document.getElementById('selectAll').checked = selectedItems.length === cart.length;
+            renderCart();
+        }
+
+        function clearCart() {
+            if (confirm(lang === 'zh' ? '纭畾娓呯┖璐墿杞﹀悧锛? : 'Clear all items in cart?')) {
+                cart = [];
+                selectedItems = [];
+                discount = 0;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                localStorage.removeItem('discount');
+                renderCart();
+            }
+        }
+
+        function continueShopping() {
+            window.location.href = 'index.html';
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('couponCode').value.trim();
+            if (!code) {
+                alert(lang === 'zh' ? '璇疯緭鍏ヤ紭鎯犲埜鐮? : 'Please enter coupon code');
+                return;
+            }
+            
+            const validCoupons = [
+                { code: 'SAVE10', discount: 10 },
+                { code: 'SAVE20', discount: 20 },
+                { code: 'VIP', discount: 15 }
+            ];
+            
+            const coupon = validCoupons.find(c => c.code.toUpperCase() === code.toUpperCase());
+            if (coupon) {
+                discount = coupon.discount;
+                localStorage.setItem('discount', discount.toString());
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('discount').textContent = `- $${discount.toFixed(2)}`;
+                updateTotals();
+                alert(lang === 'zh' ? '浼樻儬鍒稿凡搴旂敤' : 'Coupon applied');
+            } else {
+                alert(lang === 'zh' ? '鏃犳晥鐨勪紭鎯犲埜鐮? : 'Invalid coupon code');
+            }
+        }
+
+        function updateTotals() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const shipping = subtotal >= 50 ? 0 : 5;
+            const finalTotal = Math.max(0, subtotal + shipping - discount);
+            
+            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+            
+            if (shipping > 0) {
+                document.getElementById('shipping').textContent = '$' + shipping.toFixed(2);
+                document.getElementById('shipping').classList.remove('shipping');
+            } else {
+                document.getElementById('shipping').textContent = lang === 'zh' ? '鍏嶈繍璐? : 'Free';
+                document.getElementById('shipping').classList.add('shipping');
+            }
+            
+            document.getElementById('totalPrice').textContent = '$' + finalTotal.toFixed(2);
+            
+            document.getElementById('checkoutBtn').disabled = cart.length === 0;
+        }
+
+        function checkout() {
+            const total = parseFloat(document.getElementById('totalPrice').textContent.replace('$', ''));
+            
+            if (cart.length === 0) {
+                alert(lang === 'zh' ? '璐墿杞︿负绌? : 'Cart is empty');
+                return;
+            }
+            
+            const order = {
+                items: cart,
+                total: total,
+                discount: discount,
+                date: new Date().toISOString(),
+                orderId: 'ORD' + Date.now()
+            };
+            
+            alert(`${lang === 'zh' ? '璁㈠崟鎻愪氦鎴愬姛锛? : 'Order placed successfully!'}\n${lang === 'zh' ? '璁㈠崟鍙凤細' : 'Order ID: '}${order.orderId}\n${lang === 'zh' ? '鎬昏锛? : 'Total: '}$${total.toFixed(2)}`);
+            
+            cart = [];
+            selectedItems = [];
+            discount = 0;
+            localStorage.removeItem('cart');
+            localStorage.removeItem('discount');
+            renderCart();
+        }
+
+        loadCart();
+    </script>
+</body>
+</html>
