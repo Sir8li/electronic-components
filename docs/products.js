@@ -1,4 +1,4 @@
-// 全局变量
+﻿// 全局变量
 window.products = [
     {
         id: 1,
