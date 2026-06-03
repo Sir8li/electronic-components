@@ -1,4 +1,4 @@
-﻿// 全局变量
+// 全局变量
 window.products = [
     {
         id: 1,
@@ -146,7 +146,15 @@ function loadSavedData() {
     const savedProducts = localStorage.getItem('customProducts');
     const savedCategories = localStorage.getItem('customCategories');
     const savedCart = localStorage.getItem('cart');
-    if (savedProducts) window.products = JSON.parse(savedProducts);
+    if (savedProducts) {
+        const customProducts = JSON.parse(savedProducts);
+        // 合并商品：保留默认商品，添加自定义商品（避免重复）
+        customProducts.forEach(custom => {
+            if (!window.products.find(p => p.id === custom.id)) {
+                window.products.push(custom);
+            }
+        });
+    }
     if (savedCategories) window.categories = JSON.parse(savedCategories);
     if (savedCart) window.cart = JSON.parse(savedCart);
 }
