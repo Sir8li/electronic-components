@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鍏ㄧ悆鐢靛瓙鍟嗗煄</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #00ff88;
+            --bg: #0a0e1a;
+            --card: #12182a;
+            --border: #1e2a4a;
+            --text: #fff;
+            --text-secondary: #8892a8;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(18, 24, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+        .nav a:hover, .nav a.active { color: var(--primary); }
+        .lang-switch {
+            margin-left: 20px;
+            padding: 5px 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            cursor: pointer;
+        }
+        .hero {
+            background: linear-gradient(135deg, #00d4ff11, #00ff8811);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 48px; margin-bottom: 10px; }
+        .hero p { color: var(--text-secondary); font-size: 18px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .categories { display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; }
+        .cat-btn {
+            padding: 10px 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cat-btn:hover, .cat-btn.active { background: var(--primary); color: #000; }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-image { font-size: 48px; text-align: center; margin-bottom: 10px; }
+        .product-name { font-weight: 600; margin-bottom: 5px; }
+        .product-desc { color: var(--text-secondary); font-size: 12px; margin-bottom: 10px; }
+        .product-price { color: var(--secondary); font-size: 20px; font-weight: bold; }
+        .add-btn {
+            width: 100%;
+            padding: 14px 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #00d9ff 0%, #0099cc 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            z-index: 10;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+        }
+        .add-btn:hover { 
+            background: linear-gradient(135deg, #00e5ff 0%, #00a8dd 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.4);
+        }
+        .add-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 217, 255, 0.3);
+        }
+        .add-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.5);
+        }
+        .add-btn.added {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            animation: addSuccess 0.5s ease-out;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+            border: 2px solid #00ff88;
+        }
+        @keyframes addSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .cart-icon {
+            font-size: 16px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            background: var(--border);
+            border: none;
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .qty-btn:hover { background: var(--primary); color: #000; }
+        .qty-input {
+            width: 50px;
+            height: 30px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            text-align: center;
+        }
+        .stock-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 5px;
+        }
+        .stock-info.low { color: var(--warning); }
+        .stock-info.out { color: var(--danger); }
+        .footer { text-align: center; padding: 30px; color: var(--text-secondary); }
+        .cart-count {
+            background: #ff4757;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">鈿?鍏ㄧ悆鐢靛瓙鍟嗗煄</div>
+            <div class="nav">
+                <a href="index.html" class="active">棣栭〉</a>
+                <a href="admin.html">绠＄悊鍚庡彴</a>
+                <a href="cart.html">璐墿杞?span class="cart-count" id="cartCount">0</span></a>
+                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '涓枃'}}</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>鍏ㄧ悆鐢靛瓙鍟嗗煄</h1>
+        <p>楂樺搧璐ㄧ數瀛愬厓浠讹紝鍏ㄧ悆閰嶉€?/p>
+    </section>
+
+    <div class="container">
+        <div class="categories" id="categories"></div>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <footer class="footer">漏 2024 Global Electronics Store</footer>
+
+    <script src="products.js"></script>
+    <script>
+        let lang = 'zh';
+
+        function toggleLang() {
+            lang = lang === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('language', lang);
+            updateAllText();
+        }
+
+        function updateAllText() {
+            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '涓枃';
+            document.querySelector('.logo').textContent = lang === 'zh' ? '鈿?鍏ㄧ悆鐢靛瓙鍟嗗煄' : '鈿?Global Electronics';
+            document.querySelector('.hero h1').textContent = lang === 'zh' ? '鍏ㄧ悆鐢靛瓙鍟嗗煄' : 'Global Electronics Store';
+            document.querySelector('.hero p').textContent = lang === 'zh' ? '楂樺搧璐ㄧ數瀛愬厓浠讹紝鍏ㄧ悆閰嶉€? : 'High quality electronic components, worldwide shipping';
+            document.querySelector('.footer').textContent = lang === 'zh' ? '漏 2024 鍏ㄧ悆鐢靛瓙鍟嗗煄' : '漏 2024 Global Electronics Store';
+            
+            document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '棣栭〉' : 'Home';
+            document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '绠＄悊鍚庡彴' : 'Admin';
+            document.querySelectorAll('.nav a')[2].textContent = (lang === 'zh' ? '璐墿杞? : 'Cart') + document.querySelector('.cart-count').outerHTML;
+            
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories');
+            container.innerHTML = window.categories.map(cat => 
+                `<button class="cat-btn ${cat.id === 'all' ? 'active' : ''}" onclick="filterProducts('${cat.id}')">${cat.name[lang]}</button>`
+            ).join('');
+        }
+
+        function filterProducts(catId) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProducts(catId);
+        }
+
+        function renderProducts(filterCat = 'all') {
+            const grid = document.getElementById('productsGrid');
+            const filtered = filterCat === 'all' ? window.products : window.products.filter(p => p.category === filterCat);
+            grid.innerHTML = filtered.map(product => {
+                const stockClass = product.stock > 100 ? 'stock-info' : product.stock > 0 ? 'stock-info low' : 'stock-info out';
+                const stockText = product.stock > 100 ? (lang === 'zh' ? '搴撳瓨鍏呰冻' : 'In Stock') : product.stock > 0 ? (lang === 'zh' ? `搴撳瓨: ${product.stock}` : `Stock: ${product.stock}`) : (lang === 'zh' ? '缂鸿揣' : 'Out of Stock');
+                return `
+                    <div class="product-card">
+                        <div class="product-image">${product.image}</div>
+                        <div class="product-name">${product.name[lang]}</div>
+                        <div class="product-desc">${product.description[lang]}</div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <div class="${stockClass}">${stockText}</div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="updateQty(${product.id}, -1)">-</button>
+                            <input type="number" class="qty-input" id="qty-${product.id}" value="1" min="1" max="${product.stock}">
+                            <button class="qty-btn" onclick="updateQty(${product.id}, 1)">+</button>
+                        </div>
+                        <button class="add-btn" id="add-btn-${product.id}" onclick="addToCart(${product.id})">
+                            <span class="cart-icon">馃洅</span>
+                            <span>${lang === 'zh' ? '鍔犲叆璐墿杞? : 'Add to Cart'}</span>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateQty(productId, delta) {
+            const input = document.getElementById(`qty-${productId}`);
+            const product = window.products.find(p => p.id === productId);
+            if (input && product) {
+                let value = parseInt(input.value) || 1;
+                value += delta;
+                if (value < 1) value = 1;
+                if (value > product.stock) value = product.stock;
+                input.value = value;
+            }
+        }
+
+        function addToCart(productId) {
+            const product = window.products.find(p => p.id === productId);
+            const qtyInput = document.getElementById(`qty-${productId}`);
+            const addBtn = document.getElementById(`add-btn-${productId}`);
+            
+            const quantity = parseInt(qtyInput?.value) || 1;
+            
+            const cartItem = window.cart.find(c => c.id === productId);
+            if (cartItem) {
+                cartItem.quantity += quantity;
+            } else {
+                window.cart.push({ ...product, quantity: quantity });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(window.cart));
+            updateCartCount();
+            
+            // 娣诲姞鏄庢樉鐨勬寜閽姩鐢诲弽棣?            if (addBtn) {
+                // 娣诲姞 added 绫昏Е鍙戝姩鐢?                addBtn.classList.add('added');
+                addBtn.innerHTML = `
+                    <span class="cart-icon">鉁?/span>
+                    <span>${lang === 'zh' ? '宸插姞鍏ヨ喘鐗╄溅' : 'Added to Cart'}</span>
+                `;
+                
+                // 鍒涘缓寮瑰嚭鍔ㄧ敾鏁堟灉
+                const floatIcon = document.createElement('span');
+                floatIcon.innerHTML = '馃洅';
+                floatIcon.style.cssText = `
+                    position: fixed;
+                    font-size: 24px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    animation: floatToCart 1s ease-in forwards;
+                `;
+                
+                const btnRect = addBtn.getBoundingClientRect();
+                const cartIcon = document.querySelector('.cart-count');
+                const cartRect = cartIcon.getBoundingClientRect();
+                
+                floatIcon.style.left = btnRect.left + btnRect.width / 2 + 'px';
+                floatIcon.style.top = btnRect.top + 'px';
+                
+                // 娣诲姞鍏抽敭甯у姩鐢绘牱寮?                const styleSheet = document.createElement('style');
+                styleSheet.textContent = `
+                    @keyframes floatToCart {
+                        0% {
+                            transform: translate(-50%, 0) scale(1);
+                            opacity: 1;
+                        }
+                        50% {
+                            transform: translate(-50%, -80px) scale(1.2);
+                            opacity: 0.8;
+                        }
+                        100% {
+                            transform: translate(${cartRect.left - btnRect.left + cartRect.width / 2 - 12}px, ${cartRect.top - btnRect.top}px) scale(0.5);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(styleSheet);
+                
+                document.body.appendChild(floatIcon);
+                
+                // 閲嶇疆鎸夐挳鐘舵€?                setTimeout(() => {
+                    addBtn.classList.remove('added');
+                    addBtn.innerHTML = `
+                        <span class="cart-icon">馃洅</span>
+                        <span>${lang === 'zh' ? '鍔犲叆璐墿杞? : 'Add to Cart'}</span>
+                    `;
+                    floatIcon.remove();
+                    styleSheet.remove();
+                }, 1500);
+            }
+            
+            // 閲嶇疆鏁伴噺涓?
+            if (qtyInput) qtyInput.value = 1;
+        }
+
+        function updateCartCount() {
+            const count = window.cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        loadSavedData();
+        const savedLang = localStorage.getItem('language');
+        if (savedLang) lang = savedLang;
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) window.cart = JSON.parse(savedCart);
+        updateCartCount();
+        updateAllText();
+    </script>
+</body>
+</html>
