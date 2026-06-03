@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鍏ㄧ悆鐢靛瓙鍟嗗煄</title>
+    <title>全球电子商城</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -187,19 +187,19 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">鈿?鍏ㄧ悆鐢靛瓙鍟嗗煄</div>
+            <div class="logo">⚡ 全球电子商城</div>
             <div class="nav">
-                <a href="index.html" class="active">棣栭〉</a>
-                <a href="admin.html">绠＄悊鍚庡彴</a>
-                <a href="cart.html">璐墿杞?span class="cart-count" id="cartCount">0</span></a>
-                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '涓枃'}}</button>
+                <a href="index.html" class="active">首页</a>
+                <a href="admin.html">管理后台</a>
+                <a href="cart.html">购物车<span class="cart-count" id="cartCount">0</span></a>
+                <button class="lang-switch" onclick="toggleLang()">{{lang === 'zh' ? 'English' : '中文'}}</button>
             </div>
         </div>
     </header>
 
     <section class="hero">
-        <h1>鍏ㄧ悆鐢靛瓙鍟嗗煄</h1>
-        <p>楂樺搧璐ㄧ數瀛愬厓浠讹紝鍏ㄧ悆閰嶉€?/p>
+        <h1>全球电子商城</h1>
+        <p>高品质电子元件，全球配送</p>
     </section>
 
     <div class="container">
@@ -207,7 +207,7 @@
         <div class="products-grid" id="productsGrid"></div>
     </div>
 
-    <footer class="footer">漏 2024 Global Electronics Store</footer>
+    <footer class="footer">© 2024 Global Electronics Store</footer>
 
     <script src="products.js"></script>
     <script>
@@ -220,15 +220,15 @@
         }
 
         function updateAllText() {
-            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '涓枃';
-            document.querySelector('.logo').textContent = lang === 'zh' ? '鈿?鍏ㄧ悆鐢靛瓙鍟嗗煄' : '鈿?Global Electronics';
-            document.querySelector('.hero h1').textContent = lang === 'zh' ? '鍏ㄧ悆鐢靛瓙鍟嗗煄' : 'Global Electronics Store';
-            document.querySelector('.hero p').textContent = lang === 'zh' ? '楂樺搧璐ㄧ數瀛愬厓浠讹紝鍏ㄧ悆閰嶉€? : 'High quality electronic components, worldwide shipping';
-            document.querySelector('.footer').textContent = lang === 'zh' ? '漏 2024 鍏ㄧ悆鐢靛瓙鍟嗗煄' : '漏 2024 Global Electronics Store';
+            document.querySelector('.lang-switch').textContent = lang === 'zh' ? 'English' : '中文';
+            document.querySelector('.logo').textContent = lang === 'zh' ? '⚡ 全球电子商城' : '⚡ Global Electronics';
+            document.querySelector('.hero h1').textContent = lang === 'zh' ? '全球电子商城' : 'Global Electronics Store';
+            document.querySelector('.hero p').textContent = lang === 'zh' ? '高品质电子元件，全球配送' : 'High quality electronic components, worldwide shipping';
+            document.querySelector('.footer').textContent = lang === 'zh' ? '© 2024 全球电子商城' : '© 2024 Global Electronics Store';
             
-            document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '棣栭〉' : 'Home';
-            document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '绠＄悊鍚庡彴' : 'Admin';
-            document.querySelectorAll('.nav a')[2].textContent = (lang === 'zh' ? '璐墿杞? : 'Cart') + document.querySelector('.cart-count').outerHTML;
+            document.querySelectorAll('.nav a')[0].textContent = lang === 'zh' ? '首页' : 'Home';
+            document.querySelectorAll('.nav a')[1].textContent = lang === 'zh' ? '管理后台' : 'Admin';
+            document.querySelectorAll('.nav a')[2].textContent = (lang === 'zh' ? '购物车' : 'Cart') + document.querySelector('.cart-count').outerHTML;
             
             renderCategories();
             renderProducts();
@@ -252,7 +252,7 @@
             const filtered = filterCat === 'all' ? window.products : window.products.filter(p => p.category === filterCat);
             grid.innerHTML = filtered.map(product => {
                 const stockClass = product.stock > 100 ? 'stock-info' : product.stock > 0 ? 'stock-info low' : 'stock-info out';
-                const stockText = product.stock > 100 ? (lang === 'zh' ? '搴撳瓨鍏呰冻' : 'In Stock') : product.stock > 0 ? (lang === 'zh' ? `搴撳瓨: ${product.stock}` : `Stock: ${product.stock}`) : (lang === 'zh' ? '缂鸿揣' : 'Out of Stock');
+                const stockText = product.stock > 100 ? (lang === 'zh' ? '库存充足' : 'In Stock') : product.stock > 0 ? (lang === 'zh' ? `库存: ${product.stock}` : `Stock: ${product.stock}`) : (lang === 'zh' ? '缺货' : 'Out of Stock');
                 return `
                     <div class="product-card">
                         <div class="product-image">${product.image}</div>
@@ -266,8 +266,8 @@
                             <button class="qty-btn" onclick="updateQty(${product.id}, 1)">+</button>
                         </div>
                         <button class="add-btn" id="add-btn-${product.id}" onclick="addToCart(${product.id})">
-                            <span class="cart-icon">馃洅</span>
-                            <span>${lang === 'zh' ? '鍔犲叆璐墿杞? : 'Add to Cart'}</span>
+                            <span class="cart-icon">🛒</span>
+                            <span>${lang === 'zh' ? '加入购物车' : 'Add to Cart'}</span>
                         </button>
                     </div>
                 `;
@@ -303,16 +303,18 @@
             localStorage.setItem('cart', JSON.stringify(window.cart));
             updateCartCount();
             
-            // 娣诲姞鏄庢樉鐨勬寜閽姩鐢诲弽棣?            if (addBtn) {
-                // 娣诲姞 added 绫昏Е鍙戝姩鐢?                addBtn.classList.add('added');
+            // 添加明显的按钮动画反馈
+            if (addBtn) {
+                // 添加 added 类触发动画
+                addBtn.classList.add('added');
                 addBtn.innerHTML = `
-                    <span class="cart-icon">鉁?/span>
-                    <span>${lang === 'zh' ? '宸插姞鍏ヨ喘鐗╄溅' : 'Added to Cart'}</span>
+                    <span class="cart-icon">✓</span>
+                    <span>${lang === 'zh' ? '已加入购物车' : 'Added to Cart'}</span>
                 `;
                 
-                // 鍒涘缓寮瑰嚭鍔ㄧ敾鏁堟灉
+                // 创建弹出动画效果
                 const floatIcon = document.createElement('span');
-                floatIcon.innerHTML = '馃洅';
+                floatIcon.innerHTML = '🛒';
                 floatIcon.style.cssText = `
                     position: fixed;
                     font-size: 24px;
@@ -328,7 +330,8 @@
                 floatIcon.style.left = btnRect.left + btnRect.width / 2 + 'px';
                 floatIcon.style.top = btnRect.top + 'px';
                 
-                // 娣诲姞鍏抽敭甯у姩鐢绘牱寮?                const styleSheet = document.createElement('style');
+                // 添加关键帧动画样式
+                const styleSheet = document.createElement('style');
                 styleSheet.textContent = `
                     @keyframes floatToCart {
                         0% {
@@ -349,18 +352,19 @@
                 
                 document.body.appendChild(floatIcon);
                 
-                // 閲嶇疆鎸夐挳鐘舵€?                setTimeout(() => {
+                // 重置按钮状态
+                setTimeout(() => {
                     addBtn.classList.remove('added');
                     addBtn.innerHTML = `
-                        <span class="cart-icon">馃洅</span>
-                        <span>${lang === 'zh' ? '鍔犲叆璐墿杞? : 'Add to Cart'}</span>
+                        <span class="cart-icon">🛒</span>
+                        <span>${lang === 'zh' ? '加入购物车' : 'Add to Cart'}</span>
                     `;
                     floatIcon.remove();
                     styleSheet.remove();
                 }, 1500);
             }
             
-            // 閲嶇疆鏁伴噺涓?
+            // 重置数量为1
             if (qtyInput) qtyInput.value = 1;
         }
 
