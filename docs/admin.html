@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>绠＄悊鍚庡彴 - 鍏ㄧ悆鐢靛瓙鍟嗗煄</title>
+    <title>管理后台 - 全球电子商城</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -100,41 +100,41 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">鈿?绠＄悊鍚庡彴</div>
+            <div class="logo">⚡ 管理后台</div>
             <div class="nav">
-                <a href="index.html">棣栭〉</a>
-                <a href="cart.html">璐墿杞?/a>
+                <a href="index.html">首页</a>
+                <a href="cart.html">购物车</a>
             </div>
         </div>
     </header>
 
     <div class="container">
         <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="add">娣诲姞鍟嗗搧</button>
-            <button class="admin-tab" data-tab="list">鍟嗗搧鍒楄〃</button>
-            <button class="admin-tab" data-tab="batch">鎵归噺涓婁紶</button>
+            <button class="admin-tab active" data-tab="add">添加商品</button>
+            <button class="admin-tab" data-tab="list">商品列表</button>
+            <button class="admin-tab" data-tab="batch">批量上传</button>
         </div>
 
         <div class="tab-content active" id="add-tab">
             <div class="form-section">
-                <h3 class="section-title">娣诲姞鍟嗗搧</h3>
+                <h3 class="section-title">添加商品</h3>
                 <div class="form-group">
-                    <label>鍟嗗搧鍚嶇О锛堜腑鏂囷級</label>
+                    <label>商品名称（中文）</label>
                     <input type="text" class="form-control" id="nameZh">
                 </div>
                 <div class="form-group">
-                    <label>鍟嗗搧鍚嶇О锛堣嫳鏂囷級</label>
+                    <label>商品名称（英文）</label>
                     <input type="text" class="form-control" id="nameEn">
                 </div>
                 <div class="form-group">
-                    <label>浠锋牸 ($)</label>
+                    <label>价格 ($)</label>
                     <input type="number" step="0.01" class="form-control" id="price">
                 </div>
                 <div class="form-group">
-                    <label>搴撳瓨</label>
+                    <label>库存</label>
                     <input type="number" class="form-control" id="stock">
                 </div>
-                <button class="btn btn-primary" onclick="addProduct()">娣诲姞鍟嗗搧</button>
+                <button class="btn btn-primary" onclick="addProduct()">添加商品</button>
             </div>
         </div>
 
@@ -144,20 +144,20 @@
 
         <div class="tab-content" id="batch-tab">
             <div class="form-section">
-                <h3 class="section-title">鎵归噺涓婁紶鍟嗗搧</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">鏀寔娣樺疂銆佸ぉ鐚€佷含涓溿€?688绛夊钩鍙帮紝姣忚涓€涓摼鎺?/p>
+                <h3 class="section-title">批量上传商品</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">支持淘宝、天猫、京东、1688等平台，每行一个链接</p>
                 <textarea class="form-control" id="batchLinks" placeholder="https://item.taobao.com/item.htm?id=123456789&#10;https://item.jd.com/product/123456789.html"></textarea>
                 <div style="margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="parseBatchLinks()">瑙ｆ瀽鍟嗗搧</button>
-                    <button class="btn btn-secondary" onclick="clearBatchLinks()">娓呯┖</button>
+                    <button class="btn btn-primary" onclick="parseBatchLinks()">解析商品</button>
+                    <button class="btn btn-secondary" onclick="clearBatchLinks()">清空</button>
                 </div>
             </div>
             <div class="form-section" id="batchPreview" style="display: none;">
-                <h3 class="section-title">鍟嗗搧棰勮锛堝彲缂栬緫锛?/h3>
-                <p style="color: var(--text-secondary); margin-bottom: 10px;">鐐瑰嚮鍟嗗搧淇℃伅鍙慨鏀癸紝鍒犻櫎涓嶉渶瑕佺殑鍟嗗搧</p>
+                <h3 class="section-title">商品预览（可编辑）</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 10px;">点击商品信息可修改，删除不需要的商品</p>
                 <div id="batchGrid"></div>
                 <div style="margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="saveBatchProducts()">淇濆瓨鍒板晢鍩?/button>
+                    <button class="btn btn-primary" onclick="saveBatchProducts()">保存到商城</button>
                 </div>
             </div>
         </div>
@@ -178,13 +178,13 @@
             const product = {
                 id: Date.now(),
                 name: { zh: document.getElementById('nameZh').value, en: document.getElementById('nameEn').value },
-                description: { zh: '楂樺搧璐ㄧ數瀛愬厓浠?, en: 'High quality component' },
+                description: { zh: '高品质电子元件', en: 'High quality component' },
                 category: 'connectors',
                 price: parseFloat(document.getElementById('price').value),
                 originalPrice: parseFloat(document.getElementById('price').value) * 1.4,
-                image: '馃攲',
+                image: '🔌',
                 specs: { model: 'Custom' },
-                tags: ['鐢靛瓙鍏冧欢'],
+                tags: ['电子元件'],
                 tagsEn: ['Electronic'],
                 stock: parseInt(document.getElementById('stock').value),
                 sales: 0,
@@ -192,7 +192,7 @@
             };
             products.push(product);
             saveProducts();
-            alert('鍟嗗搧娣诲姞鎴愬姛');
+            alert('商品添加成功');
             renderProductList();
         }
 
@@ -211,10 +211,10 @@
 
         function parseBatchLinks() {
             const linksText = document.getElementById('batchLinks').value.trim();
-            if (!linksText) { alert('璇疯緭鍏ュ晢鍝侀摼鎺?); return; }
+            if (!linksText) { alert('请输入商品链接'); return; }
             
             const links = linksText.split('\n').filter(l => l.trim());
-            if (links.length === 0) { alert('璇疯緭鍏ユ湁鏁堢殑鍟嗗搧閾炬帴'); return; }
+            if (links.length === 0) { alert('请输入有效的商品链接'); return; }
             
             batchProducts = [];
             
@@ -243,8 +243,8 @@
                 if (id) {
                     if (products.find(p => p.id === id)) return;
                     
-                    const names = ['USB鏁版嵁绾?, 'LED鐏彔', '璐寸墖鐢甸樆', '寮€鍙戞澘', '閿傜數姹?, '浼犳劅鍣?, '缁х數鍣?, 'WiFi妯″潡'];
-                    const icons = ['馃攲', '馃挕', '馃敡', '馃捇', '馃攱', '馃摗', '鈿?, '馃敩'];
+                    const names = ['USB数据线', 'LED灯珠', '贴片电阻', '开发板', '锂电池', '传感器', '继电器', 'WiFi模块'];
+                    const icons = ['🔌', '💡', '🔧', '💻', '🔋', '📡', '⚡', '🔬'];
                     const cats = ['connectors', 'led', 'resistors', 'ics', 'power', 'sensors', 'relays', 'devboards'];
                     const idx = index % 8;
                     const price = Math.round((Math.random() * 20 + 2) * 100) / 100;
@@ -252,13 +252,13 @@
                     batchProducts.push({
                         id: id,
                         name: { zh: names[idx] + ' #' + id, en: names[idx] + ' #' + id },
-                        description: { zh: '楂樺搧璐ㄧ數瀛愬厓浠?, en: 'High quality component' },
+                        description: { zh: '高品质电子元件', en: 'High quality component' },
                         category: cats[idx],
                         price: price,
                         originalPrice: Math.round(price * 1.4 * 100) / 100,
                         image: icons[idx],
                         specs: { model: 'Model-' + id },
-                        tags: ['鐢靛瓙鍏冧欢'],
+                        tags: ['电子元件'],
                         tagsEn: ['Electronic'],
                         stock: 500,
                         sales: 0,
@@ -268,7 +268,7 @@
             });
             
             if (batchProducts.length === 0) {
-                alert('鏈兘瑙ｆ瀽鍒版湁鏁堝晢鍝侀摼鎺?);
+                alert('未能解析到有效商品链接');
                 return;
             }
             
@@ -280,14 +280,14 @@
             const grid = document.getElementById('batchGrid');
             grid.innerHTML = batchProducts.map((product, idx) => `
                 <div class="product-item" style="margin-bottom: 15px;">
-                    <button onclick="removeBatchProduct(${idx})" style="background: #ff4757; color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-bottom: 10px;">鍒犻櫎</button>
+                    <button onclick="removeBatchProduct(${idx})" style="background: #ff4757; color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-bottom: 10px;">删除</button>
                     <div class="product-image">${product.image}</div>
                     <div style="margin: 10px 0;">
-                        <label style="display: block; color: #8892a8; font-size: 12px;">鍚嶇О锛堜腑鏂囷級</label>
+                        <label style="display: block; color: #8892a8; font-size: 12px;">名称（中文）</label>
                         <input type="text" value="${product.name.zh}" onchange="updateBatchProduct(${idx}, 'name', 'zh', this.value)" class="form-control" style="margin-bottom: 5px;">
-                        <label style="display: block; color: #8892a8; font-size: 12px;">鍚嶇О锛堣嫳鏂囷級</label>
+                        <label style="display: block; color: #8892a8; font-size: 12px;">名称（英文）</label>
                         <input type="text" value="${product.name.en}" onchange="updateBatchProduct(${idx}, 'name', 'en', this.value)" class="form-control" style="margin-bottom: 5px;">
-                        <label style="display: block; color: #8892a8; font-size: 12px;">浠锋牸 ($)</label>
+                        <label style="display: block; color: #8892a8; font-size: 12px;">价格 ($)</label>
                         <input type="number" step="0.01" value="${product.price}" onchange="updateBatchProduct(${idx}, 'price', '', parseFloat(this.value))" class="form-control">
                     </div>
                 </div>
@@ -309,7 +309,7 @@
         }
 
         function saveBatchProducts() {
-            if (batchProducts.length === 0) { alert('娌℃湁鍙繚瀛樼殑鍟嗗搧'); return; }
+            if (batchProducts.length === 0) { alert('没有可保存的商品'); return; }
             
             let saved = 0;
             batchProducts.forEach(product => {
@@ -324,7 +324,7 @@
             document.getElementById('batchLinks').value = '';
             batchProducts = [];
             
-            alert('鎴愬姛淇濆瓨 ' + saved + ' 涓晢鍝?);
+            alert('成功保存 ' + saved + ' 个商品');
             renderProductList();
         }
 
